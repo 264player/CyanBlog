@@ -1,0 +1,42 @@
+﻿@font-face {
+    font-family: main;
+    src: url('../lib/font-33481/Iansui0.91-Regular-2.ttf');
+}
+
+body {
+    height: 100%;
+    background-image: url('../pictrues/blob-scene-haikei.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: "main";
+    font-size: large;
+    letter-spacing:3px;
+    line-height:32px;
+}
+
+.footer{
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-sizing:border-box;
+}
+
+    .footer a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .footer a:hover {
+        text-decoration: underline;
+    }
+
+    .footer .social-media {
+        margin-top: 10px;
+    }
+
+    .footer .copyright {
+        margin-top: 10px;
+        font-size: 12px;
+    }
