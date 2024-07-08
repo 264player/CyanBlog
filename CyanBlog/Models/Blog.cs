@@ -33,8 +33,8 @@ namespace CyanBlog.Models
         /// <summary>
         /// 博客正文
         /// </summary>
-        [Required(ErrorMessage = "这里忘记写了")]
         [Display(Name = "博客正文")]
+        [Required(ErrorMessage = "这里忘记写了")]
         public string Content {  get; set; }
 
         /// <summary>

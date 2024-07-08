@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cn">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,17 +10,20 @@
     <link rel="stylesheet" href="~/css/Global.css" asp-append-version="true" />
 </head>
 <body>
-        <div class="layui-row">
+    <div class="layui-row">
         <div class="layui-col-md12" style="text-align: center;">
-            <ul class="layui-nav " style="background-color: rgba(0,0 , 0, 0);">
+            <ul id="nav" class="layui-nav " style="background-color: rgba(0,0 , 0, 0);">
                 <li class="layui-nav-item">
-                    <a asp-action="Index" class="layui-font-black layui-font-18">博客</a>
+                    <a asp-controller="Blog" asp-action="Index" class="layui-font-black layui-font-18">博客</a>
                 </li>
                 <li class="layui-nav-item">
                     <a href="#" class="layui-font-black layui-font-18">分类</a>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="#" class="layui-font-black layui-font-18">时间线</a>
+                    <a asp-controller="Blog" asp-action="TimeLine" class="layui-font-black layui-font-18">时间线</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a asp-controller="Message" asp-action="Index" class="layui-font-black layui-font-18">留言</a>
                 </li>
                 <li class="layui-nav-item">
                     <a href="#" class="layui-font-black layui-font-18">更多</a>
@@ -36,16 +39,19 @@
             </ul>
         </div>
     </div>
-    <div class="container layui-row">
-        <main role="main" class="pb-3">
+    <main class="layui-row" style="min-height: 100vh;">
             @RenderBody()
-        </main>
-    </div>
-    <footer class="layui-row footer ">
+    </main>
+    <footer class="layui-row myfooter">
+        <div class="layui-col-md12">
             &copy; 2024 - CyanBlog - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/lib/layui/layui.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

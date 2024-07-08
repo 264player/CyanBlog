@@ -1,5 +1,6 @@
 using CyanBlog.DbAccess.Context;
 using Microsoft.EntityFrameworkCore;
+using NLog.Extensions.Logging;
 
 namespace CyanBlog
 {
@@ -12,12 +13,21 @@ namespace CyanBlog
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            // 配置cyanBlog数据库上下文
             builder.Services.AddDbContext<CyanBlogDbContext>(options =>
             {
                 options.UseMySql(builder.Configuration.GetConnectionString("MySQLConnection"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MySQLConnection")));
                 options.EnableSensitiveDataLogging();
                 options.EnableServiceProviderCaching();
             }, ServiceLifetime.Transient); // 尝试指定服务的生命周期，如Transient
+
+            //配置Nlog日志
+            builder.Services.AddLogging(logbuilder =>
+            {
+                logbuilder.ClearProviders();
+                logbuilder.SetMinimumLevel(LogLevel.Trace);
+                logbuilder.AddNLog("D:\\VSProjects\\CyanBlog\\CyanBlog\\NLog.config");
+            });
 
 
             var app = builder.Build();
@@ -41,7 +51,7 @@ namespace CyanBlog
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Blog}/{action=Index}/{id?}");
 
             app.Run();
         }

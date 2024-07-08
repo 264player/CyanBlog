@@ -15,6 +15,8 @@ namespace CyanBlog.Controllers
 
         public IActionResult Index()
         {
+            var ip = HttpContext.Connection.RemoteIpAddress!=null? HttpContext.Connection.RemoteIpAddress.ToString() : "kong";
+            _logger.LogInformation($"{ip}--{this.GetType().FullName}Home/Index被请求");
             return View();
         }
 

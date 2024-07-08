@@ -19,7 +19,7 @@ namespace CyanBlog.Models
         /// <summary>
         /// 留言内容
         /// </summary>
-        [Required]
+        [Required(ErrorMessage ="这就是无字天书吗")]
         [StringLength(2000)]
         [Display(Name = "留言内容")]
         public string Content {  get; set; }
@@ -28,13 +28,8 @@ namespace CyanBlog.Models
         /// 留言时间
         /// </summary>
         [Required]
+        [Display(Name ="创建时间")]
         public DateTime CreateTime {  get; set; }
-
-        /// <summary>
-        /// 博客ID
-        /// </summary>
-        [Required]
-        public uint BlogId {  get; set; }
 
         /// <summary>
         /// 用户ID
@@ -62,7 +57,6 @@ namespace CyanBlog.Models
             MessageId = 0;
             Content = string.Empty;
             CreateTime = DateTime.Now;
-            BlogId = 0;
             UserId = 0;
             User = new User();
             ManagerId = 0;
@@ -74,16 +68,14 @@ namespace CyanBlog.Models
         /// <param name="messageId">留言ID</param>
         /// <param name="content">留言内容</param>
         /// <param name="createTime">创建时间</param>
-        /// <param name="blogId">博客ID</param>
         /// <param name="userId">用户ID</param>
         /// <param name="user">用户</param>
         /// <param name="managerId">管理员ID</param>
-        public Message(uint messageId, string content, DateTime createTime, uint blogId, uint userId, User user, uint managerId)
+        public Message(uint messageId, string content, DateTime createTime, uint userId, User user, uint managerId)
         {
             MessageId = messageId;
             Content = content;
             CreateTime = createTime;
-            BlogId = blogId;
             UserId = userId;
             User = user;
             ManagerId = managerId;

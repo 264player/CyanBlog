@@ -43,8 +43,8 @@ namespace CyanBlog.Models
         /// <summary>
         /// 邮箱
         /// </summary>
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage ="没有邮箱怎么能行")]
+        [EmailAddress(ErrorMessage ="一定要邮箱才行")]
         [Display(Name = "邮箱")]
         public string Email {  get; set; }
 

@@ -1,0 +1,79 @@
+﻿@{
+}
+
+@model Blog;
+
+<div class="layui-col-md10 layui-col-md-offset1 layui-panel" style="padding:32px; min-height: 100%;height: 100%;">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly"></div>
+
+        
+        <div class="form-group">
+            <label class="">
+                @Html.DisplayNameFor(model => model.Title)
+                <input class="layui-input" type="text" asp-for="Title" />
+            </label>
+            <span asp-validation-for="Title" class="layui-font-red"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="">
+                <input class="form-control" type="checkbox" asp-for="CopyRight" /> @Html.DisplayNameFor(model => model.CopyRight)
+            </label>
+            <span asp-validation-for="CopyRight" class="layui-font-red"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="">
+                <input class="form-control" type="checkbox" asp-for="IsComment" /> @Html.DisplayNameFor(model => model.IsComment)
+            </label>
+            <span asp-validation-for="IsComment" class="layui-font-red"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="">
+                <input class="form-control" type="checkbox" asp-for="IsPublish" /> @Html.DisplayNameFor(model => model.IsPublish)
+            </label>
+            <span asp-validation-for="IsPublish" class=""></span>
+        </div>
+
+        <div class="form-group">
+            <label class="">
+                <input class="form-control" type="checkbox" asp-for="Donate" /> @Html.DisplayNameFor(model => model.Donate)
+            </label>
+            <span asp-validation-for="Donate" class="layui-font-red"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="">
+                @Html.DisplayNameFor(model => model.Description)
+                <textarea class="layui-textarea" asp-for="Description"></textarea>
+            </label>
+            <span asp-validation-for="Description" class="layui-font-red"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="">
+                @Html.DisplayNameFor(model => model.Content)
+                <textarea class="layui-textarea" asp-for="Content" style="height:50vh;"></textarea>
+            </label>
+            <span asp-validation-for="Content" class="layui-font-red"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="">
+                @Html.DisplayNameFor(model => model.Classify.Name)
+                <input class="layui-input" type="text" asp-for="Classify.Name" />
+            </label>
+            <span asp-validation-for="Classify.Name" class="layui-font-red"></span>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="layui-btn layui-btn-primary layui-border-green" style="margin:16px 8px;">创建</button>
+        </div>
+    </form>
+
+    <div>
+        <a asp-action="Index">返回列表</a>
+    </div>
+</div>
