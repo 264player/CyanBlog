@@ -45,13 +45,11 @@ namespace CyanBlog.Models
         /// <summary>
         /// 父评论ID
         /// </summary>
-        [Required]
-        public uint FatherID {  get; set; }
+        public uint? FatherID {  get; set; }
 
         /// <summary>
         /// 父评论
         /// </summary>
-        [ForeignKey("FatherID")]
         public Comment? FatherComment { get; set; }
 
         /// <summary>

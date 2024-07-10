@@ -58,11 +58,14 @@ namespace CyanBlog.Controllers
                 NotFound();
             }
             Blog? blog = await _dbContext.Blog.Include(b=>b.Classify).FirstAsync(b => b.BlogID == id);
+            List<Comment> comments = await _dbContext.Comment.Where(comment=>comment.BlogID == id).ToListAsync();
             if (blog == null)
             {
                 NotFound();
             }
-            return View(blog);
+            ViewData["BlogDetails"] = blog;
+            ViewData["CommentList"] = comments;
+            return View();
         }
 
         /// <summary>
@@ -70,9 +73,10 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <returns>返回新建博客页面</returns>
         // GET: BlogController/Create
-        public ActionResult Create()
+        public async Task<ActionResult> CreatePage()
         {
-            return View();
+            ViewData["ClassifyList"] = await _dbContext.Classify.ToListAsync();
+            return View("Create");
         }
 
         /// <summary>
@@ -85,9 +89,9 @@ namespace CyanBlog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Blog blog)
         {
-            Classify? classify =  await _dbContext.Classify.FirstOrDefaultAsync(c => c.Name.CompareTo(blog.Classify.Name)==0);
-            if(classify != null)
-                blog.Classify = classify;
+            Classify? exitclassify =  await _dbContext.Classify.FirstOrDefaultAsync(c => c.Name.CompareTo(blog.Classify.Name)==0);
+            if(exitclassify != null)
+                blog.Classify = exitclassify;
             await _dbContext.Blog.AddAsync(blog);
             _logger.LogInformation($"新增了一个博客{blog.BlogID}--{blog.Title}");
             _dbContext.SaveChanges();

@@ -1,6 +1,6 @@
 ﻿@font-face {
-    font-family: main;
-    src: url('../lib/font-33481/Iansui0.91-Regular-2.ttf');
+    font-family: '宋体', Arial, sans-serif;
+    /*src: url('../lib/font-33481/Iansui0.91-Regular-2.ttf');*/
 }
 
 body {
@@ -10,7 +10,7 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
     font-family: "main";
-    font-size: large;
+    font-size:large;
     letter-spacing:3px;
     line-height:32px;
 }
@@ -33,3 +33,27 @@ body {
     .myfooter a:hover {
         text-decoration: underline;
     }
+
+/* This was made with GlassGenerator.netlify.app */
+
+.glass-container {
+    border-radius: 0px;
+    backdrop-filter: blur(20px);
+    background-color: rgba(197,164,155, 0);
+    box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px;
+    border: 2px rgba(255,255,255,0.4) solid;
+    border-bottom: 2px rgba(40,40,40,0.35) solid;
+    border-right: 2px rgba(40,40,40,0.35) solid;
+}
+
+/* This was made with GlassGenerator.netlify.app */
+
+.glass-item {
+    border-radius: 10px;
+    backdrop-filter: blur(0px);
+    background-color: rgba(255,231,224, 0.5);
+    box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px;
+    border: 2px rgba(255,255,255,0.4) solid;
+    border-bottom: 2px rgba(40,40,40,0.35) solid;
+    border-right: 2px rgba(40,40,40,0.35) solid;
+}

@@ -3,6 +3,7 @@ using System;
 using CyanBlog.DbAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CyanBlog.Migrations
 {
     [DbContext(typeof(CyanBlogDbContext))]
-    partial class CyanBlogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240708092043_CommentFatherIDCanBeNull")]
+    partial class CommentFatherIDCanBeNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,9 +106,6 @@ namespace CyanBlog.Migrations
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<uint?>("FatherCommentCommentId")
-                        .HasColumnType("int unsigned");
-
                     b.Property<uint?>("FatherID")
                         .HasColumnType("int unsigned");
 
@@ -119,7 +119,7 @@ namespace CyanBlog.Migrations
 
                     b.HasIndex("BlogID");
 
-                    b.HasIndex("FatherCommentCommentId");
+                    b.HasIndex("FatherID");
 
                     b.HasIndex("UserId");
 
@@ -244,7 +244,7 @@ namespace CyanBlog.Migrations
 
                     b.HasOne("CyanBlog.Models.Comment", "FatherComment")
                         .WithMany("ChildComments")
-                        .HasForeignKey("FatherCommentCommentId");
+                        .HasForeignKey("FatherID");
 
                     b.HasOne("CyanBlog.Models.User", "User")
                         .WithMany()

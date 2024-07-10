@@ -1,62 +1,106 @@
 ﻿@{
+    Blog? blog = ViewData["BlogDetails"] as Blog;
+    List<Comment>? comments = ViewData["CommentList"] as List<Comment>;
 }
 
-@model Blog;
+@model Comment;
 
-<div class="layui-col-md10 layui-col-md-offset1 layui-panel" style="padding:32px; min-height: 100%;height: 100%;">
+<div class="layui-col-md8 layui-col-md-offset2 layui-panel" style="padding:32px; min-height: 100%;height: 100%;">
     <div class="layui-row">
-        <h2 id="title" class="layui-col-md12" style="text-align:center;margin:16px;">@Model.Title</h2>
+        <h2 id="title" class="layui-col-md12" style="text-align:center;margin:16px;">@blog.Title</h2>
     </div>
     <div class="layui-row" style="margin:16px;">
         <blockquote id="description" class="layui-elem-quote layui-quote-nm layui-col-md10 layui-col-md-offset1">
-            @Model.Description
+            @blog.Description
         </blockquote>
     </div>
     <div class="layui-row" style="margin:16px;">
         <div id="content" class="layui-col-md10 layui-col-md-offset1">
-            @Model.Content
+            @blog.Content
         </div>
     </div>
     <div class="layui-row" style="margin:16px;">
         <a id="classify"class="layui-font-blue" href="#">
-            @Model.Classify.Name
+            @blog.Classify.Name
         </a>
     </div>
     <div class="layui-row" style="margin:16px;">
-        <p class="layui-col-md4">
-            编写时间-@Model.CreateTime
+        <p class="layui-col-md6">
+            编写时间:@blog.CreateTime.ToString("yyyy年MM月dd日-hh:mm:ss")
+        </p>
+        <p class="layui-col-md6">
+            最后更新时间:@blog.UpdateTime.ToString("yyyy年MM月dd日-hh:mm:ss")
         </p>
         <p class="layui-col-md4">
-            最后更新时间-@Model.UpdateTime
-        </p>
-        <p class="layui-col-md4">
-            浏览次数-@Model.ViewCount
+            浏览次数:@blog.ViewCount
         </p>
     </div>
 
     <div class="layui-row" style="margin:16px;">
         <label class="layui-col-md3">
-            <input class="form-control" type="checkbox" asp-for="CopyRight" value="@Model.CopyRight" readonly /> @Html.DisplayNameFor(model => model.CopyRight)
+            <input class="form-control" type="checkbox" value="@blog.CopyRight" readonly /> 版权是否开放
         </label>
         <label class="layui-col-md3">
-            <input class="form-control" type="checkbox" asp-for="IsComment" value="@Model.IsComment" readonly /> @Html.DisplayNameFor(model => model.IsComment)
+            <input class="form-control" type="checkbox" value="@blog.IsComment" readonly /> 是否可以评论
         </label>
         <label class="layui-col-md3">
-            <input class="form-control" type="checkbox" asp-for="IsPublish" value="@Model.IsPublish" readonly /> @Html.DisplayNameFor(model => model.IsPublish)
+            <input class="form-control" type="checkbox" value="@blog.IsPublish" readonly /> 发布
         </label>
         <label class="layui-col-md3">
-            <input class="form-control" type="checkbox" asp-for="Donate" value="@Model.Donate" readonly /> @Html.DisplayNameFor(model => model.Donate)
+            <input class="form-control" type="checkbox" value="@blog.Donate" readonly /> 打赏
         </label>
     </div>
 </div>
 
-<div class="layui-col-md10 layui-col-md-offset1 layui-panel" style="padding:32px; min-height: 100%;height: 100%;">
+<div class="layui-col-md8 layui-col-md-offset2 layui-panel" style="padding:32px;margin-bottom:32px; min-height: 100%;height: 100%;">
     <div class="layui-row" style="margin:16px;">
-        <form>
-            <textarea class="layui-textarea"></textarea>
+        <form method="post" asp-controller="Comment" asp-action="Create" class="layui-col-md12 layui-panel layui-form" style="margin:32px 0px;padding:32px;">
+            <div class="layui-form-item" style="margin:16px;">
+                <label class="">
+                    <input class="layui-input" type="text" asp-for="User.Email" placeholder="@Html.DisplayNameFor(model => model.User.Email)" />
+                </label>
+                <span asp-validation-for="User.Email" class="layui-font-red"></span>
+            </div>
+            <div class="layui-form-item layui-hide" style="margin:16px;">
+                <label class="">
+                    <input name="BlogID" class="layui-input" type="text" asp-for="BlogID" value="@blog.BlogID" placeholder="@Html.DisplayNameFor(model => model.BlogID)" />
+                </label>
+                <span asp-validation-for="BlogID" class="layui-font-red"></span>
+            </div>
+            <div class="layui-form-item" style="margin:16px;">
+                <textarea class="layui-textarea" asp-for="Content" placeholder="@Html.DisplayNameFor(model => model.Content)"></textarea>
+                <span asp-validation-for="Content" class="layui-font-red"></span>
+            </div>
+
+
+
+            <div class="layui-row" style="margin:16px;">
+                <input class="layui-btn layui-btn-primary" type="submit" value="评论" />
+            </div>
         </form>
     </div>
     <div class="layui-row" style="margin:16px;">
-
+        <div class="layui-col-md12" style="min-height: 100%;height: 100%;">
+            @if (comments != null && comments.Count != 0)
+            {
+                @foreach (var item in comments)
+                {
+                    <div class="layui-panel" style="margin: 32px 0px;">
+                        <div style="padding: 32px;">
+                            <p>@item.Content</p>
+                            <p>@item.CreateTime.ToString("yyyy年MM月dd日-hh:mm:ss")</p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="layui-panel" style="margin: 32px 0px;">
+                    <div style="padding: 32px;">
+                        <p>期待你的评论</p>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 </div>
