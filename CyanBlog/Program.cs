@@ -1,5 +1,9 @@
+using System.Text;
 using CyanBlog.DbAccess.Context;
+using Humanizer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using NLog.Extensions.Logging;
 
 namespace CyanBlog
@@ -29,6 +33,46 @@ namespace CyanBlog
                 logbuilder.AddNLog("D:\\VSProjects\\CyanBlog\\CyanBlog\\NLog.config");
             });
 
+            //配置JWT身份验证
+            var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]);
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+             {
+                 options.RequireHttpsMetadata = false;
+                 options.SaveToken = true;
+                 options.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     ValidIssuer = builder.Configuration["Jwt:Issuser"],
+                     ValidAudience = builder.Configuration["Jwt:Audience"],
+                     IssuerSigningKey = new SymmetricSecurityKey(key),
+
+                     ValidateIssuer = false,
+                     ValidateAudience = false,
+                     ValidateLifetime = true,
+                     ValidateIssuerSigningKey = false,
+
+                     ClockSkew = TimeSpan.FromSeconds(5),
+                 };
+
+                 options.Events = new JwtBearerEvents
+                 {
+                     OnMessageReceived = context =>
+                     {
+                         var token = context.Request.Cookies["JwtToken"];
+                         if (!string.IsNullOrEmpty(token))
+                         {
+                             context.Token = token;
+                         }
+                         return Task.CompletedTask;
+                     }
+                 };
+             });
+
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
@@ -40,13 +84,23 @@ namespace CyanBlog
                 app.UseHsts();
             }
 
-           
+            app.Use(async (context, next) =>
+            {
+                var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+                logger.LogInformation("Request received");
+                foreach (var cookie in context.Request.Cookies)
+                {
+                    logger.LogInformation($"Cookie: {cookie.Key} = {cookie.Value}");
+                }
+                await next();
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

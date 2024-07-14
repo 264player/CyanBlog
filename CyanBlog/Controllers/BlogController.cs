@@ -73,7 +73,8 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <returns>返回新建博客页面</returns>
         // GET: BlogController/Create
-        public async Task<ActionResult> CreatePage()
+        [HttpGet]
+        public async Task<ActionResult> CreateBlog()
         {
             ViewData["ClassifyList"] = await _dbContext.Classify.ToListAsync();
             return View("Create");
@@ -104,33 +105,27 @@ namespace CyanBlog.Controllers
         /// <param name="id">待编辑的博客id</param>
         /// <returns>编辑博客页面</returns>
         // GET: BlogController/Edit/5
-        public async Task<ActionResult> Edit(int? id)
+        [HttpGet]
+        public async Task<ActionResult> EditBlog(uint id)
         {
-            if (id == null)
-            {
-                NotFound();
-            }
-            Blog? blog = await _dbContext.Blog.FindAsync(id);
+            Blog? blog = _dbContext.Blog.Find(id);
+            ViewData["ClassifyList"] = await _dbContext.Classify.ToListAsync();
             if (blog == null)
-            {
-                NotFound();
-            }
-            return View(blog);
+                return NotFound();
+            return View("Update", blog);
         }
 
         // POST: BlogController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Blog blog)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            Classify? exitclassify =  _dbContext.Classify.FirstOrDefault(c => c.Name.CompareTo(blog.Classify.Name) == 0);
+            if (exitclassify != null)
+                blog.Classify = exitclassify;
+            _dbContext.Blog.Update(blog);
+            _dbContext.SaveChanges();
+            return RedirectToAction("ViewList");
         }
 
         /// <summary>
@@ -138,34 +133,38 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="id">待删除的id</param>
         /// <returns>删除博客界面</returns>
-        // GET: BlogController/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        [HttpGet]
+        public async Task<ActionResult> DeleteBlog(uint? id)
         {
             if (id == null)
             {
                 NotFound();
             }
-            Blog? blog = await _dbContext.Blog.FindAsync(id);
+            Blog? blog = await _dbContext.Blog.Include(b=>b.Classify).SingleAsync(b=>b.BlogID == id);
             if (blog == null)
             {
                 NotFound();
             }
-            return View(blog);
+            return View("Delete",blog);
         }
 
         // POST: BlogController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Remove(uint id)
         {
-            try
+            Blog? blog = _dbContext.Blog.Find(id);   
+            if(blog != null)
             {
-                return RedirectToAction(nameof(Index));
+                _dbContext.Blog.Remove(blog);
+                _dbContext.SaveChanges();
             }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction("ViewList");
+        }
+
+        public async Task<ActionResult> ViewList()
+        {
+            return View(await _dbContext.Blog.OrderByDescending(blog => blog.BlogID).ToListAsync<Blog>());
         }
 
         /// <summary>

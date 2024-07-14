@@ -18,6 +18,7 @@
         </div>
     </div>
     <div class="layui-row" style="margin:16px;">
+        分类:
         <a id="classify" class="layui-font-blue" href="#">
             @Model.Classify.Name
         </a>
@@ -50,6 +51,11 @@
     </div>
 
     <div class="layui-row" style="margin:16px;">
-        <a href="#" class="layui-btn layui-btn-primary layui-border-red">删除</a>
+        <form class="layui-form" asp-action="Remove" method="post">
+            <input class="layui-input layui-hide" type="text" name="id" value="@Model.BlogID" readonly />
+            <div class="layui-form-item">
+                <button type="submit" class="layui-btn layui-btn-primary layui-border-red" style="margin:16px 8px;">删除</button>
+            </div>
+        </form>
     </div>
 </div>

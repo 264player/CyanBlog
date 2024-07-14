@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CyanBlog</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CyanBlog.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/layui/css/layui.min.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="~/css/Global.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="layui-row layui-panel glass-item" style="margin-bottom:32px;">
+        <div class="layui-col-md12" style="text-align: center;">
+            <ul id="nav" class="layui-nav " style="background-color: rgba(0,0 , 0, 0);">
+                <li class="layui-nav-item">
+                    <a asp-controller="Blog" asp-action="Index" class="layui-font-black layui-font-18">博客</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a asp-controller="Classify" asp-action="Index" class="layui-font-black layui-font-18">分类</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a asp-controller="Blog" asp-action="TimeLine" class="layui-font-black layui-font-18">时间线</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a asp-controller="Message" asp-action="ViewList" class="layui-font-black layui-font-18">留言</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="#" class="layui-font-black layui-font-18">更多</a>
+                    <dl class="layui-nav-child  glass-item" >
+                        <dd style="z-index:9999;">
+                            <a href="#" class="layui-font-black">
+                                <i class="layui-icon layui-icon-email layui-font-18"></i></a></dd>
+                        <dd style="z-index:9999;">
+                            <a href="#" class="layui-font-black">
+                                <i class="layui-icon layui-icon-github layui-font-18"></i></a></dd>
+                        <dd style="z-index:9;">
+                            <a href="#" class="layui-font-black">
+                                <i class="layui-icon layui-icon-login-qq layui-font-18"></i></a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <main class="layui-row" style="min-height: 100vh;">
+            @RenderBody()
+    </main>
+    <footer class="layui-row myfooter">
+        <div class="layui-col-md12">
+            &copy; 2024 - CyanBlog - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/layui/layui.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

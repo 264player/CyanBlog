@@ -38,7 +38,7 @@ namespace CyanBlog.Controllers
         /// 首页，留言列表
         /// </summary>
         /// <returns>首页页面</returns>
-        // GET: MessageController
+        [HttpGet]
         public async Task<ActionResult> Index()
         {
             var ip = GetUserIp();
@@ -48,10 +48,39 @@ namespace CyanBlog.Controllers
             return View();
         }
 
-        // GET: MessageController/Details/5
-        public ActionResult Details(int id)
+
+        /// <summary>
+        /// 浏览管理列表，需要认证
+        /// </summary>
+        /// <returns>管理留言列表界面</returns>
+        [HttpGet]
+        public async Task<ActionResult> ViewList()
         {
-            return NotFound();
+            var ip = GetUserIp();
+            _logger.LogInformation($"\n{ip}访问Message-Index");
+            List<Message> messages = await _context.Message.OrderByDescending(m => m.MessageId).Select(m =>new Message(){
+                MessageId = m.MessageId,
+                Content = m.Content,
+                UserId = m.UserId,
+                CreateTime = m.CreateTime,
+                ManagerId = m.ManagerId
+            }) .ToListAsync();
+            return View(messages);
+        }
+
+
+        /// <summary>
+        /// 留言详情
+        /// </summary>
+        /// <param name="id">留言id</param>
+        /// <returns>留言详情页面</returns>
+        [HttpGet]
+        public ActionResult Details(uint id)
+        {
+            Message? message = _context.Message.Find(id);
+            if(message == null)
+                return NotFound();
+            return View(message);
         }
 
         // GET: MessageController/Create
@@ -77,55 +106,68 @@ namespace CyanBlog.Controllers
             _context.Message.Add(message);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-            //else
-            //{
-            //    var ip = GetUserIp();
-            //    _logger.LogWarning($"{ip}访问了Message/Create,{ModelState.Values}\nErrorList:\n{LogModelState()}");
-
-            //    return NotFound();
-            //}
         }
 
-        // GET: MessageController/Edit/5
-        public ActionResult Edit(int id)
+        /// <summary>
+        /// 编辑留言内容页面
+        /// </summary>
+        /// <param name="id">留言id</param>
+        /// <returns>返回留言编辑界面</returns>
+        [HttpGet]
+        public ActionResult EditView(uint id)
         {
-            return NotFound();
+            Message? message = _context.Message.Find(id);
+            if (message == null)
+                return NotFound();
+            return View("Edit",message);
         }
 
-        // POST: MessageController/Edit/5
+        /// <summary>
+        /// 编辑页面提交入口
+        /// </summary>
+        /// <param name="message">被编辑的留言</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Message message)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
+            User? exitUser = _context.User.Find(message.UserId);
+            if(exitUser != null)
+                message.User = exitUser;
+            _context.Message.Update(message);
+            _context.SaveChanges();
+            return RedirectToAction("ViewList");
+        }
+
+        /// <summary>
+        /// 删除留言页面
+        /// </summary>
+        /// <param name="id">留言id</param>
+        /// <returns>删除留言界面的id</returns>
+        [HttpGet]
+        public ActionResult DeleteView(uint id)
+        {
+            Message? message = _context.Message.Find(id);
+            if (message == null)
                 return NotFound();
-            }
+            return View("Delete",message);
         }
 
-        // GET: MessageController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return NotFound();
-        }
-
-        // POST: MessageController/Delete/5
+        /// <summary>
+        /// 删除提交页面
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(uint id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return NotFound();
-            }
+            Message? message = _context.Message.Find(id);
+            if (message == null)
+                return View("ViewList");
+            _context.Message.Remove(message);
+            _context.SaveChanges();
+            return RedirectToAction("ViewList");
         }
 
         /// <summary>

@@ -1,0 +1,103 @@
+﻿@model IEnumerable<CyanBlog.Models.Blog>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "留言表";
+}
+<div class="layui-col-md10 layui-col-md-offset1 layui-panel glass-container" style="padding:32px;margin-bottom:32px; min-height: 100%;height: 100%;">
+    <p>
+        <a asp-action="CreateBlog" class="layui-btn layui-btn-radius">新建博客</a>
+    </p>
+    <table class="layui-table glass-item">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.BlogID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Content)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreateTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UpdateTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ClassId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CopyRight)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Donate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsComment)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsPublish)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ViewCount)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BlogID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Content)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreateTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UpdateTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ClassId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CopyRight)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Donate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsComment)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsPublish)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ViewCount)
+                    </td>
+                    <td>
+                        <a asp-action="EditBlog" asp-route-id="@item.BlogID">编辑</a> |
+                        <a asp-action="Details" asp-route-id="@item.BlogID">详情</a> |
+                        <a asp-action="DeleteBlog" asp-route-id="@item.BlogID">删除</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

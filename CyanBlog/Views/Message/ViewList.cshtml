@@ -1,0 +1,61 @@
+﻿@model IEnumerable<CyanBlog.Models.Message>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "留言表";
+}
+<div class="layui-col-md8 layui-col-md-offset2 layui-panel glass-container" style="padding:32px;margin-bottom:32px; min-height: 100%;height: 100%;">
+    <p>
+        <a asp-action="Create" class="layui-btn layui-btn-radius">新建留言</a>
+    </p>
+    <table class="layui-table glass-item">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.MessageId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Content)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreateTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UserId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ManagerId)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MessageId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Content)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreateTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ManagerId)
+                    </td>
+                    <td>
+                        <a asp-controller="Message" asp-action="EditView" asp-route-id="@item.MessageId">编辑</a> |
+                        <a asp-controller="Message" asp-action="Details" asp-route-id="@item.MessageId">详情</a> |
+                        <a asp-action="DeleteView" asp-route-id="@item.MessageId">删除</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
