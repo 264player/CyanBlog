@@ -21,9 +21,6 @@
                     @Html.DisplayNameFor(model => model.Description)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Content)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.CreateTime)
                 </th>
                 <th>
@@ -60,11 +57,8 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Title)
                     </td>
-                    <td>
+                    <td layui-elip>
                         @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Content)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.CreateTime)

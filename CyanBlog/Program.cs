@@ -1,5 +1,6 @@
 using System.Text;
 using CyanBlog.DbAccess.Context;
+using CyanBlog.Filter;
 using Humanizer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,12 @@ namespace CyanBlog
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<VisitFilter>();
+            });
+
+            builder.Services.AddSingleton<VisitFilter>();
 
             // 配置cyanBlog数据库上下文
             builder.Services.AddDbContext<CyanBlogDbContext>(options =>

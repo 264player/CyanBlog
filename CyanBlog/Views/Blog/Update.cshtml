@@ -51,7 +51,9 @@
         <div class="layui-form-item">
             <label class="">
                 @Html.DisplayNameFor(model => model.Content)
-                <textarea class="layui-textarea" asp-for="Content" style="height:50vh;">@Model.Content</textarea>
+                <div class="layui-form-item" id="test-editor">
+                    <textarea class="layui-textarea" asp-for="Content" style="height:50vh;display:none;">@Model.Content</textarea>
+                </div>
             </label>
             <span asp-validation-for="Content" class="layui-font-red"></span>
         </div>
@@ -78,3 +80,15 @@
         <a asp-action="Index">返回列表</a>
     </div>
 </div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/editor.md-master/editormd.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var editor = editormd("test-editor", {
+            width: "100%",
+            height: "50vh",
+            saveHTMLToTextarea: true,
+            path: "http://localhost/lib/editor.md-master/lib/"
+        });
+    });
+</script>
