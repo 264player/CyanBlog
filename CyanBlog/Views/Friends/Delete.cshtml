@@ -1,7 +1,7 @@
-﻿@model CyanBlog.Models.Message
+﻿@model CyanBlog.Models.Friend
 
 @{
-    ViewData["Title"] = "删除留言";
+    ViewData["Title"] = "删除友链";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -11,36 +11,43 @@
         <hr />
         <dl class="layui-row">
             <dt class="layui-col-md2">
-                @Html.DisplayNameFor(model => model.Content)
+                @Html.DisplayNameFor(model => model.FriendId)
             </dt>
             <dd class="layui-col-md10">
-                @Html.DisplayFor(model => model.Content)
+                @Html.DisplayFor(model => model.FriendId)
+            </dd>
+            <dt class="layui-col-md2">
+                @Html.DisplayNameFor(model => model.Title)
+            </dt>
+            <dd class="layui-col-md10">
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+            <dt class="layui-col-md2">
+                @Html.DisplayNameFor(model => model.Url)
+            </dt>
+            <dd class="layui-col-md10">
+                @Html.DisplayFor(model => model.Url)
+            </dd>
+            <dt class="layui-col-md2">
+                @Html.DisplayNameFor(model => model.PictureUrl)
+            </dt>
+            <dd class="layui-col-md2">
+                @Html.DisplayFor(model => model.PictureUrl)
             </dd>
             <dt class="layui-col-md2">
                 @Html.DisplayNameFor(model => model.CreateTime)
             </dt>
-            <dd class="layui-col-md10">
-                @Html.DisplayFor(model => model.CreateTime)
-            </dd>
-            <dt class="layui-col-md2">
-                @Html.DisplayNameFor(model => model.UserId)
-            </dt>
-            <dd class="layui-col-md10">
-                @Html.DisplayFor(model => model.UserId)
-            </dd>
-            <dt class="layui-col-md2">
-                @Html.DisplayNameFor(model => model.ManagerId)
-            </dt>
             <dd class="layui-col-md2">
-                @Html.DisplayFor(model => model.ManagerId)
+                @Html.DisplayFor(model => model.CreateTime)
             </dd>
         </dl>
 
-        <form asp-action="Delete" asp-route-id="@Model.MessageId">
+        <form asp-controller="Friends" asp-action="Delete" asp-route-id="@Model?.FriendId" method="post">
             <input type="submit" value="删除" class="layui-btn layui-btn-danger" /> |
             <a asp-action="ViewList">返回列表</a>
         </form>
     </div>
 </div>
+
 
 

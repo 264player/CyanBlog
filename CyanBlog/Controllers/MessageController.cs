@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using CyanBlog.DbAccess.Context;
 using CyanBlog.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -54,6 +55,7 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <returns>管理留言列表界面</returns>
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult> ViewList()
         {
             var ip = GetUserIp();
@@ -83,12 +85,6 @@ namespace CyanBlog.Controllers
             return View(message);
         }
 
-        // GET: MessageController/Create
-        public ActionResult Create()
-        {
-            return NotFound();
-        }
-
         /// <summary>
         /// 创建新留言,异步保存
         /// </summary>
@@ -96,6 +92,7 @@ namespace CyanBlog.Controllers
         /// <returns>正确访问并提交就返回到留言首页，非正常提交就返回到NotFound</returns>
         // POST: MessageController/Create
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create( Message message)
         {
@@ -114,6 +111,7 @@ namespace CyanBlog.Controllers
         /// <param name="id">留言id</param>
         /// <returns>返回留言编辑界面</returns>
         [HttpGet]
+        [Authorize]
         public ActionResult EditView(uint id)
         {
             Message? message = _context.Message.Find(id);
@@ -129,6 +127,7 @@ namespace CyanBlog.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Edit(Message message)
         {
             User? exitUser = _context.User.Find(message.UserId);
@@ -145,6 +144,7 @@ namespace CyanBlog.Controllers
         /// <param name="id">留言id</param>
         /// <returns>删除留言界面的id</returns>
         [HttpGet]
+        [Authorize]
         public ActionResult DeleteView(uint id)
         {
             Message? message = _context.Message.Find(id);
@@ -160,6 +160,7 @@ namespace CyanBlog.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Delete(uint id)
         {
             Message? message = _context.Message.Find(id);

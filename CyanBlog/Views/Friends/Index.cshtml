@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "友链";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model Friend
+
+@{
+    List<Friend> friends = ViewBag.FriendList;
+}
+<div class="layui-col-md8 layui-col-md-offset2 layui-panel  glass-container" style="padding:32px;margin-bottom:32px; min-height: 100%;height: 100%;">
+    @if (friends != null && friends.Count != 0)
+    {
+        @foreach (var item in friends)
+        {
+            <div class="layui-panel  glass-item" style="margin-bottom: 32px;">
+                <div style="padding: 32px;">
+                    <p>@item.Title</p>
+                    <p><a href="@item.Url">@item.Url</a></p>
+                    <p>@item.CreateTime.ToString("yyyy年MM月dd日-hh:mm:ss")</p>
+                </div>
+            </div>
+        }
+
+    }
+    else
+    {
+        <div class="layui-panel glass-item" style="margin-bottom: 32px;">
+            <div style="padding: 32px;">
+                <p>期待你的链接</p>
+            </div>
+        </div>
+    }
+    <form method="post" asp-controller="Friends" asp-action="Create" class=" glass-item layui-panel layui-form" style="margin:32px 0px;padding:32px;">
+        <div class="layui-form-item" style="margin:16px;">
+            <label class="">
+                <input class="layui-input" type="text" asp-for="@Model.Title" placeholder="@Html.DisplayNameFor(model => model.Title)"/>
+            </label>
+            <span asp-validation-for="@Model.Title" class="layui-font-red"></span>
+        </div>
+
+        <div class="layui-form-item" style="margin:16px;">
+            <label class="">
+                <input class="layui-input" type="text" asp-for="@Model.Url" placeholder="@Html.DisplayNameFor(model => model.Url)" />
+            </label>
+            <span asp-validation-for="@Model.Url" class="layui-font-red"></span>
+        </div>
+        <div class="layui-form-item" style="margin:16px;">
+            <input class="layui-btn layui-btn-primary" type="submit" value="添加链接" />
+        </div>
+    </form>
+    
+</div>

@@ -42,12 +42,17 @@ namespace CyanBlog.Controllers
             _configuration = configuration;
         }
 
-        [Authorize]
+        /// <summary>
+        /// 管理员界面
+        /// </summary>
+        /// <returns></returns>
+
         public IActionResult AdminPage()
         {
             return View();
         }
 
+        [Route("Admin/")]
         [HttpGet]
         public IActionResult Login()
         {
@@ -55,7 +60,7 @@ namespace CyanBlog.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(UserLoginDto model)
+        public IActionResult LoginNext(UserLoginDto model)
         {
             var authenticatedUser = AuthenticateUser(model);
             if (authenticatedUser != null)
@@ -66,10 +71,10 @@ namespace CyanBlog.Controllers
                 Response.Cookies.Append("JwtToken", token, new CookieOptions
                 {
                     HttpOnly = true,
-                    Expires = DateTime.Now.AddHours(1)
+                    Expires = DateTime.Now.AddHours(12)
                 });
 
-                return RedirectToAction("AdminPage", "Admin");
+                return RedirectToAction("ViewList", "Blog");
             }
 
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");

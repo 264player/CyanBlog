@@ -1,0 +1,61 @@
+﻿@model IEnumerable<CyanBlog.Models.Friend>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "友链表";
+}
+<div class="layui-col-md8 layui-col-md-offset2 layui-panel glass-container" style="padding:32px;margin-bottom:32px; min-height: 100%;height: 100%;">
+    <p>
+        <a asp-action="Index" class="layui-btn layui-btn-radius">添加友链</a>
+    </p>
+    <table class="layui-table glass-item">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.FriendId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Url)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PictureUrl)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreateTime)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FriendId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Url)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PictureUrl)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreateTime)
+                    </td>
+                    <td>
+                        <a asp-controller="Friends" asp-action="EditView" asp-route-id="@item.FriendId">编辑</a> |
+                        <a asp-controller="Friends" asp-action="Details" asp-route-id="@item.FriendId">详情</a> |
+                        <a asp-controller="Friends" asp-action="DeleteView" asp-route-id="@item.FriendId">删除</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

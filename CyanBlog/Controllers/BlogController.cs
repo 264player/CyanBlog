@@ -1,5 +1,6 @@
 ﻿using CyanBlog.DbAccess.Context;
 using CyanBlog.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -73,6 +74,7 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <returns>返回新建博客页面</returns>
         // GET: BlogController/Create
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult> CreateBlog()
         {
@@ -86,6 +88,7 @@ namespace CyanBlog.Controllers
         /// <param name="blog">需要提交的博客</param>
         /// <returns>返回到首页</returns>
         // POST: BlogController/Create
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Blog blog)
@@ -105,6 +108,7 @@ namespace CyanBlog.Controllers
         /// <param name="id">待编辑的博客id</param>
         /// <returns>编辑博客页面</returns>
         // GET: BlogController/Edit/5
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult> EditBlog(uint id)
         {
@@ -116,6 +120,7 @@ namespace CyanBlog.Controllers
         }
 
         // POST: BlogController/Edit/5
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Blog blog)
@@ -134,6 +139,7 @@ namespace CyanBlog.Controllers
         /// <param name="id">待删除的id</param>
         /// <returns>删除博客界面</returns>
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult> DeleteBlog(uint? id)
         {
             if (id == null)
@@ -149,6 +155,7 @@ namespace CyanBlog.Controllers
         }
 
         // POST: BlogController/Delete/5
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Remove(uint id)
@@ -162,6 +169,7 @@ namespace CyanBlog.Controllers
             return RedirectToAction("ViewList");
         }
 
+        [Authorize]
         public async Task<ActionResult> ViewList()
         {
             return View(await _dbContext.Blog.OrderByDescending(blog => blog.BlogID).ToListAsync<Blog>());

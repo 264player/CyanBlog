@@ -61,7 +61,7 @@ namespace CyanBlog
                      ValidateLifetime = true,
                      ValidateIssuerSigningKey = false,
 
-                     ClockSkew = TimeSpan.FromSeconds(5),
+                     ClockSkew = TimeSpan.FromSeconds(0),
                  };
 
                  options.Events = new JwtBearerEvents
