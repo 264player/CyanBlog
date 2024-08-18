@@ -15,7 +15,7 @@
                 <div class="layui-tab-item layui-show">
                     @for (int i = 0;i<blogGroup.Count;i++)
                     {
-                        @if (blogGroup[i][0].ClassId == classify.ClassId)
+                        @if (blogGroup[i].Count > 0 && (blogGroup[i][0].ClassId == classify.ClassId))
                         {
                             @foreach (Blog blog in blogGroup[i])
                             {

@@ -60,6 +60,8 @@ namespace CyanBlog.Controllers
             }
             Blog? blog = await _dbContext.Blog.Include(b=>b.Classify).FirstAsync(b => b.BlogID == id);
             List<Comment> comments = await _dbContext.Comment.Where(comment=>comment.BlogID == id).ToListAsync();
+            blog.ViewCount++;
+            await _dbContext.SaveChangesAsync();
             if (blog == null)
             {
                 NotFound();
@@ -128,6 +130,7 @@ namespace CyanBlog.Controllers
             Classify? exitclassify =  _dbContext.Classify.FirstOrDefault(c => c.Name.CompareTo(blog.Classify.Name) == 0);
             if (exitclassify != null)
                 blog.Classify = exitclassify;
+            blog.UpdateTime = DateTime.Now;
             _dbContext.Blog.Update(blog);
             _dbContext.SaveChanges();
             return RedirectToAction("ViewList");
