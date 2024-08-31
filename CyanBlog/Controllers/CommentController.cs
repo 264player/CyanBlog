@@ -4,6 +4,9 @@ using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CyanBlog.Controllers
 {
@@ -47,16 +50,19 @@ namespace CyanBlog.Controllers
             return View();
         }
 
-        // GET: MessageController/Details/5
-        public ActionResult Details(int id)
+        /// <summary>
+        /// 查看评论详情
+        /// </summary>
+        /// <param name="id">评论ID</param>
+        /// <returns>对应ID的评论</returns>
+        [HttpGet]
+        public async Task<ActionResult> Details(uint id)
         {
-            return NotFound();
-        }
-
-        // GET: MessageController/Create
-        public ActionResult Create()
-        {
-            return NotFound();
+            Comment? comment = await _context.Comment.FindAsync(id);
+            if(comment == null)
+                return NotFound();
+            else
+                return View(comment);
         }
 
         /// <summary>
@@ -69,58 +75,70 @@ namespace CyanBlog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Comment comment)
         {
+            
             User? exitUser = await _context.User.FirstOrDefaultAsync(u => comment.User.Email.Equals(u.Email));
-            if (exitUser != null)
+            
+            if (exitUser != null)// 用户已存在
+            {
+                if (!comment.User.NickName.IsNullOrEmpty())// 用户有新昵称
+                {
+                    exitUser.NickName = comment.User.NickName;
+                    exitUser.UpdateTime = DateTime.Now;
+                }
                 comment.User = exitUser;
-            Blog? exitBlog = await _context.Blog.FirstOrDefaultAsync(b => comment.BlogID == b.BlogID);
+            }
+            else
+            {
+                if (comment.User.NickName.IsNullOrEmpty())
+                    comment.User.NickName = "不愿意透露姓名的游客";
+            }
+
+            comment.User.Password = MD5.HashData(Encoding.UTF8.GetBytes($"{comment.User.UserId}-{comment.User.Email}")).ToString()??"Cyanmoon";
+
+                Blog? exitBlog = await _context.Blog.FirstOrDefaultAsync(b => comment.BlogID == b.BlogID);
             if (exitBlog != null)
                 comment.FatherBlog = exitBlog;
-            _logger.LogInformation($"\n{GetUserIp()}访问了/Create-通过了前端验证");
+            _logger.LogInformation($"\n{GetUserIp()}参与了评论。\n用户编号为{comment.User.UserId}");
             _context.Comment.Add(comment);
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", "Blog", new { id= $"{comment.BlogID}" });
         }
 
-        // GET: MessageController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpGet]
+        public async Task<ActionResult> Delete(uint id)
         {
-            return NotFound();
+            Comment? comment = await _context.Comment.FindAsync(id);
+            return View(comment);
         }
 
-        // POST: MessageController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return NotFound();
-            }
-        }
 
-        // GET: MessageController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return NotFound();
-        }
-
+        /// <summary>
+        /// 管理员方法
+        /// 删除指定评论
+        /// </summary>
+        /// <param name="id">评论id</param>
+        /// <returns>管理页面</returns>
         // POST: MessageController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> DeleteComment(uint id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
+            Comment? comment = await _context.Comment.FindAsync(id);
+            if (comment != null) {
+                _context.Comment.Remove(comment);
+                await _context.SaveChangesAsync();
             }
-            catch
-            {
-                return NotFound();
-            }
+            return RedirectToAction("ViewList");
+        }
+
+        /// <summary>
+        /// 管理员管理评论界面
+        /// </summary>
+        /// <returns>评论管理界面</returns>
+        [Authorize]
+        public async Task<ActionResult> ViewList()
+        {
+            return View(await _context.Comment.OrderByDescending(c=>c.CommentId).ToListAsync());
         }
 
         /// <summary>

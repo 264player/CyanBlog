@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Cryptography;
+using System.Text;
 using CyanBlog.DbAccess.Context;
 using CyanBlog.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -44,7 +45,7 @@ namespace CyanBlog.Controllers
         {
             var ip = GetUserIp();
             _logger.LogInformation($"\n{ip}访问Message-Index");
-            List<Message> messages = await _context.Message.OrderByDescending(m => m.MessageId).ToListAsync();
+            List<Message> messages = await _context.Message.OrderByDescending(m => m.MessageId).Include(m=>m.User).ToListAsync();
             ViewBag.MessageList = messages;
             return View();
         }
@@ -60,12 +61,13 @@ namespace CyanBlog.Controllers
         {
             var ip = GetUserIp();
             _logger.LogInformation($"\n{ip}访问Message-Index");
-            List<Message> messages = await _context.Message.OrderByDescending(m => m.MessageId).Select(m =>new Message(){
+            List<Message> messages = await _context.Message.OrderByDescending(m => m.MessageId).Include(u => u.User).Select(m =>new Message(){
                 MessageId = m.MessageId,
                 Content = m.Content,
                 UserId = m.UserId,
                 CreateTime = m.CreateTime,
-                ManagerId = m.ManagerId
+                ManagerId = m.ManagerId,
+                User = m.User,
             }) .ToListAsync();
             return View(messages);
         }
@@ -92,14 +94,27 @@ namespace CyanBlog.Controllers
         /// <returns>正确访问并提交就返回到留言首页，非正常提交就返回到NotFound</returns>
         // POST: MessageController/Create
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create( Message message)
         {
             User? exitUser = await _context.User.FirstOrDefaultAsync(u=>message.User.Email.Equals(u.Email));
-            if(exitUser != null)
+            if (exitUser != null)// 用户已存在
+            {
+                if (!string.IsNullOrEmpty(message.User.NickName))// 用户有新昵称
+                {
+                    exitUser.NickName = message.User.NickName;
+                    exitUser.UpdateTime = DateTime.Now;
+                }
                 message.User = exitUser;
-            _logger.LogInformation($"\n{GetUserIp()}访问了Message/Create-通过了前端验证");
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(message.User.NickName))
+                    message.User.NickName = "不愿意透露姓名的游客";
+            }
+
+            message.User.Password = MD5.HashData(Encoding.UTF8.GetBytes($"{message.User.UserId}-{message.User.Email}")).ToString() ?? "Cyanmoon";
+            _logger.LogInformation($"\n{GetUserIp()}参与了评论。\n用户编号为{message.User.UserId}");
             _context.Message.Add(message);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

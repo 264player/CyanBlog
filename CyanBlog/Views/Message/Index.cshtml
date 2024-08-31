@@ -11,8 +11,16 @@
         {
             <div class="layui-panel  glass-item" style="margin-bottom: 32px;">
                 <div style="padding: 32px;">
+                    @if (string.IsNullOrEmpty(item.User.NickName))
+                    {
+                        <h3>小黑:</h3>
+                    }
+                    else
+                    {
+                        <h3>@item.User.NickName:</h3>
+                    }
                     <p>@item.Content</p>
-                    <p>@item.CreateTime.ToString("yyyy年MM月dd日-hh:mm:ss")</p>
+                    <p class="layui-font-14">@item.CreateTime.ToString("yyyy年MM月dd日-hh:mm:ss")</p>
                 </div>
             </div>
         }
@@ -29,9 +37,16 @@
     <form method="post" asp-action="Create" asp-fragment="nav" class=" glass-item layui-panel layui-form" style="margin:32px 0px;padding:32px;">
         <div class="layui-form-item" style="margin:16px;">
             <label class="">
-                <input class="layui-input" type="text" asp-for="User.Email" placeholder="@Html.DisplayNameFor(model => model.User.Email)"/>
+                <input class="layui-input" style="background-color:rgba(255,255,255,0.5);" type="text" asp-for="User.Email" placeholder="@Html.DisplayNameFor(model => model.User.Email)"/>
             </label>
             <span asp-validation-for="User.Email" class="layui-font-red"></span>
+        </div>
+
+        <div class="layui-form-item" style="margin:16px;">
+            <label class="">
+                <input class="layui-input" type="text" asp-for="User.NickName" placeholder="@Html.DisplayNameFor(model => model.User.NickName)" />
+            </label>
+            <span asp-validation-for="User.NickName" class="layui-font-red"></span>
         </div>
 
         <div class="layui-form-item" style="margin:16px;">
@@ -39,7 +54,7 @@
             <span asp-validation-for="Content" class="layui-font-red"></span>
         </div>
         <div class="layui-form-item" style="margin:16px;">
-            <input class="layui-btn layui-btn-primary" type="submit" value="留言" />
+            <input class="layui-btn layui-btn-primary  layui-btn-lg layui-border-blue" type="submit" value="留言" />
         </div>
     </form>
     

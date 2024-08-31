@@ -1,10 +1,12 @@
 ﻿@{
+
     Blog? blog = ViewData["BlogDetails"] as Blog;
     List<Comment>? comments = ViewData["CommentList"] as List<Comment>;
     string copyright = blog.CopyRight?"checked":"",
     isPublish = blog.IsPublish?"checked":"",
     isComment = blog.IsComment?"checked":"",
     donate = blog.Donate?"checked":"";
+    ViewData["Title"] = blog.Title;
 }
 
 @model Comment;
@@ -44,22 +46,28 @@
         </p>
     </div>
 
-    <div class="layui-row layui-form" style="margin:16px;">
+@*     <div class="layui-row layui-form" style="margin:16px;">
         <input type="checkbox" lay-skin="switch" title="开启|关闭" @copyright disabled/> 版权
         <input type="checkbox" lay-skin="switch" title="开启|关闭" @isPublish disabled />发布
         <input type="checkbox" lay-skin="switch" title="开启|关闭" @isComment disabled />评论
         <input type="checkbox" lay-skin="switch" title="开启|关闭" @donate disabled />打赏
-    </div>
+    </div> *@
 </div>
 
-<div class="layui-col-md8 layui-col-md-offset2 layui-panel" style="padding:32px;margin-bottom:32px; min-height: 100%;height: 100%;">
-    <div class="layui-row" style="margin:16px;">
-        <form method="post" asp-controller="Comment" asp-action="Create" class="layui-col-md12 layui-panel layui-form" style="margin:32px 0px;padding:32px;">
+<div class="layui-col-md8 layui-col-md-offset2 layui-panel glass-container" style="padding:32px;margin-bottom:16px;margin-top:16px; min-height: 100%;height: 100%;">
+    <div class="layui-row " style="margin:16px;">
+        <form method="post" asp-controller="Comment" asp-action="Create" class="layui-col-md12 layui-panel layui-form glass-item" style="margin:32px 0px;padding:32px;">
             <div class="layui-form-item" style="margin:16px;">
                 <label class="">
                     <input class="layui-input" type="text" asp-for="User.Email" placeholder="@Html.DisplayNameFor(model => model.User.Email)" />
                 </label>
                 <span asp-validation-for="User.Email" class="layui-font-red"></span>
+            </div>
+            <div class="layui-form-item" style="margin:16px;">
+                <label class="">
+                    <input class="layui-input" type="text" asp-for="User.NickName" placeholder="@Html.DisplayNameFor(model => model.User.NickName)" />
+                </label>
+                <span asp-validation-for="User.NickName" class="layui-font-red"></span>
             </div>
             <div class="layui-form-item layui-hide" style="margin:16px;">
                 <label class="">
@@ -75,7 +83,7 @@
 
 
             <div class="layui-row" style="margin:16px;">
-                <input class="layui-btn layui-btn-primary" type="submit" value="评论" />
+                <input class="layui-btn layui-btn-primary  layui-btn-lg layui-border-blue" type="submit" value="评论" />
             </div>
         </form>
     </div>
@@ -85,10 +93,18 @@
             {
                 @foreach (var item in comments)
                 {
-                    <div class="layui-panel" style="margin: 32px 0px;">
+                    <div class="layui-panel glass-item" style="margin: 12px 0px;">
                         <div style="padding: 32px;">
+                            @if (string.IsNullOrEmpty(item.User.NickName))
+                            {
+                                <h4>小黑:</h4>
+                            }
+                            else
+                            {
+                                <h4>@item.User.NickName:</h4>
+                            }
                             <p>@item.Content</p>
-                            <p>@item.CreateTime.ToString("yyyy年MM月dd日-hh:mm:ss")</p>
+                            <p class="layui-font-14">@item.CreateTime.ToString("yyyy年MM月dd日-hh:mm:ss")</p>
                         </div>
                     </div>
                 }

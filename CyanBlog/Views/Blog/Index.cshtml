@@ -1,16 +1,25 @@
 ﻿@{
-    ViewData["Title"] = "首页";
+    ViewData["Title"] = "博客";
 }
 @model List<Blog>;
 
+
 <div class="layui-col-md8 layui-col-md-offset2 layui-panel glass-container" style="padding:32px;margin-bottom:32px; min-height: 100%;height: 100%;">
-    @foreach (Blog blog in Model)
+    @if (Model.Count != 0)
     {
-        <div class="layui-panel glass-item" style="margin-bottom: 32px;">
-            <div style="padding: 32px;">
-                <h2><a asp-controller="Blog" asp-action="Details" asp-route-id="@blog.BlogID">@blog.Title</a></h2>
-                <p>@blog.Description</p>
+        @foreach (Blog blog in Model)
+        {
+            <div class="layui-panel glass-item" style="margin-bottom: 32px;">
+                <div style="padding: 32px;">
+                    <h2><a asp-controller="Blog" asp-action="Details" asp-route-id="@blog.BlogID">@blog.Title</a></h2>
+                    <p>@blog.Description</p>
+                </div>
             </div>
-        </div>
+        }
+
+    }
+    else
+    {
+        <h1>还没有发布博客</h1>
     }
 </div>

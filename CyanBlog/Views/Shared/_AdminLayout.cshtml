@@ -18,8 +18,11 @@
                 <li class="layui-nav-item">
                     <a asp-controller="Blog" asp-action="ViewList" class="layui-font-black layui-font-18">博客</a>
                 </li>
-                <li class="layui-nav-item">
+@*                 <li class="layui-nav-item">
                     <a asp-controller="Classify" asp-action="Index" class="layui-font-black layui-font-18">分类</a>
+                </li> *@
+                <li class="layui-nav-item">
+                    <a asp-controller="Comment" asp-action="ViewList" class="layui-font-black layui-font-18">评论</a>
                 </li>
                 <li class="layui-nav-item">
                     <a asp-controller="Blog" asp-action="TimeLine" class="layui-font-black layui-font-18">时间线</a>
@@ -53,7 +56,9 @@
     <footer class="layui-row myfooter">
         <div class="layui-col-md12">
             &copy; 2024 - hollow-264的个人博客，保留所有权利。未经授权请勿转载。欢迎分享，但请注明出处，并链接到原文。<br />
-            关注我的社交媒体<br />
+            <i class="layui-icon-login-qq layui-icon"></i>3358529041
+            <i class="layui-icon layui-icon-email"></i>bule.craete@foxmail.com
+            <i class="layui-icon layui-icon-github"></i><a href="https://github.com/264player">264player</a><br />
             免责声明：本站部分内容可能包含第三方链接，本博客对其内容不承担责任。
         </div>
     </footer>

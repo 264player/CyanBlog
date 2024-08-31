@@ -15,9 +15,9 @@
         {
             <div class="layui-panel  glass-item" style="margin-bottom: 32px;">
                 <div style="padding: 32px;">
-                    <p>@item.Title</p>
+                    <h4>@item.Title</h4>
                     <p><a href="@item.Url">@item.Url</a></p>
-                    <p>@item.CreateTime.ToString("yyyy年MM月dd日-hh:mm:ss")</p>
+                    <p class="layui-font-14">@item.CreateTime.ToString("yyyy年MM月dd日-hh:mm:ss")</p>
                 </div>
             </div>
         }
@@ -46,7 +46,7 @@
             <span asp-validation-for="@Model.Url" class="layui-font-red"></span>
         </div>
         <div class="layui-form-item" style="margin:16px;">
-            <input class="layui-btn layui-btn-primary" type="submit" value="添加链接" />
+            <input class="layui-btn layui-btn-primary layui-btn-lg layui-border-blue" type="submit" value="添加链接" />
         </div>
     </form>
     

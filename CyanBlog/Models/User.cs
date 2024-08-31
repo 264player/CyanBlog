@@ -85,8 +85,8 @@ namespace CyanBlog.Models
             Email = string.Empty;
             Type = UserType.NORMAL;
             HeadPictureUrl = string.Empty;
-            CreateTime = DateTime.MinValue;
-            UpdateTime = DateTime.MinValue;
+            CreateTime = DateTime.Now;
+            UpdateTime = DateTime.Now;
         }
 
         /// <summary>

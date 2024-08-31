@@ -1,0 +1,57 @@
+﻿@model IEnumerable<CyanBlog.Models.Comment>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "评论管理界面";
+}
+<div class="layui-col-md10 layui-col-md-offset1 layui-panel glass-container" style="padding:32px;margin-bottom:32px; min-height: 100%;height: 100%;">
+    <table class="layui-table glass-item">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.CommentId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Content)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BlogID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreateTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UserId)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CommentId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Content)
+                    </td>
+                    <td layui-elip>
+                        @Html.DisplayFor(modelItem => item.BlogID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreateTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserId)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.CommentId">详情</a> |
+                        <a asp-action="Delete" asp-route-id="@item.CommentId">删除</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
