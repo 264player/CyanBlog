@@ -1,4 +1,6 @@
-﻿namespace CyanBlog.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CyanBlog.Models
 {
     /// <summary>
     /// 用户登录数据传输对象
@@ -8,10 +10,12 @@
         /// <summary>
         /// 用户名
         /// </summary>
+        [Display(Name = "用户名")]
         public string UserName { get; set; }
         /// <summary>
         /// 密码
         /// </summary>
+        [Display(Name = "密码")]
         public string Password { get; set; }
 
         /// <summary>

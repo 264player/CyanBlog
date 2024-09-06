@@ -47,11 +47,32 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <returns></returns>
 
-        public IActionResult AdminPage()
+        public IActionResult InitializeRoot()
         {
             return View();
         }
 
+        /// <summary>
+        /// 处理初始化管理员界面接口
+        /// </summary>
+        /// <param name="userLogin">管理员初始化的信息</param>
+        /// <returns>重定向到博客首页</returns>
+        [HttpPost]
+        public IActionResult InitializeRoot(UserLoginDto userLogin)
+        {
+            User u = new User();
+            u.UserName = userLogin.UserName;
+            u.Password = userLogin.Password;
+            u.Type = UserType.ROOT;
+            _dbContext.User.Add(u);
+            _dbContext.SaveChanges();
+            return RedirectToAction("Index", "Blog");
+        }
+
+        /// <summary>
+        /// 管理员登录界面
+        /// </summary>
+        /// <returns></returns>
         [Route("Admin/")]
         [HttpGet]
         public IActionResult Login()
@@ -59,6 +80,11 @@ namespace CyanBlog.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 管理员登录之后的验证接口
+        /// </summary>
+        /// <param name="model">管理员登录信息</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult LoginNext(UserLoginDto model)
         {
@@ -81,6 +107,11 @@ namespace CyanBlog.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// 用于验证是否存在对应的管理员用户
+        /// </summary>
+        /// <param name="loginDto">管理员登录信息</param>
+        /// <returns>如果存在对应的管理员用户，则返回管理员用户对象，否则返回空</returns>
         private User? AuthenticateUser(UserLoginDto loginDto)
         {
             User? u = _dbContext.User.Single(u=>u.UserName==loginDto.UserName&&u.Password==loginDto.Password);
@@ -92,6 +123,11 @@ namespace CyanBlog.Controllers
             return null;
         }
 
+        /// <summary>
+        /// 使用管理员用户信息生成jwt令牌
+        /// </summary>
+        /// <param name="user">管理员用户</param>
+        /// <returns>返回jwt令牌</returns>
         private string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

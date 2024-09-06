@@ -121,7 +121,12 @@ namespace CyanBlog.Controllers
             return View("Update", blog);
         }
 
-        // POST: BlogController/Edit/5
+        /// <summary>
+        /// // POST: BlogController/Edit/5
+        /// 修改博客的接口
+        /// </summary>
+        /// <param name="blog">修改之后的博客</param>
+        /// <returns>重定向到博客管理首页</returns>
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -157,7 +162,11 @@ namespace CyanBlog.Controllers
             return View("Delete",blog);
         }
 
-        // POST: BlogController/Delete/5
+        /// <summary>
+        /// 管理员删除博客的接口
+        /// </summary>
+        /// <param name="id">需要删除的博客的id</param>
+        /// <returns>重定向到博客管理首页</returns>
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -172,6 +181,10 @@ namespace CyanBlog.Controllers
             return RedirectToAction("ViewList");
         }
 
+        /// <summary>
+        /// 博客管理的首页
+        /// </summary>
+        /// <returns>博客管理首页页面</returns>
         [Authorize]
         public async Task<ActionResult> ViewList()
         {

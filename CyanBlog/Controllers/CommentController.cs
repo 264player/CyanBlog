@@ -43,8 +43,6 @@ namespace CyanBlog.Controllers
         // GET: MessageController
         public async Task<ActionResult> Index()
         {
-            var ip = GetUserIp();
-            _logger.LogInformation($"\n{ip}访问Message-Index");
             List<Message> messages = await _context.Message.OrderByDescending(m => m.MessageId).ToListAsync();
             ViewBag.MessageList = messages;
             return View();
@@ -70,7 +68,6 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="comment">表单提交上来的评论信息</param>
         /// <returns>正确访问并提交就返回到留言首页，非正常提交就返回到NotFound</returns>
-        // POST: MessageController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Comment comment)
@@ -103,7 +100,12 @@ namespace CyanBlog.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", "Blog", new { id= $"{comment.BlogID}" });
         }
-
+        
+        /// <summary>
+        /// 删除评论页面
+        /// </summary>
+        /// <param name="id">待删除的评论id</param>
+        /// <returns>展示待删除的评论的页面</returns>
         [HttpGet]
         public async Task<ActionResult> Delete(uint id)
         {
@@ -118,7 +120,6 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="id">评论id</param>
         /// <returns>管理页面</returns>
-        // POST: MessageController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteComment(uint id)
@@ -148,21 +149,6 @@ namespace CyanBlog.Controllers
         private string GetUserIp()
         {
             return HttpContext.Connection.RemoteIpAddress != null ? HttpContext.Connection.RemoteIpAddress.ToString() : "空IP";
-        }
-
-
-        private string LogModelState()
-        {
-            StringBuilder summary = new StringBuilder();
-            foreach (var key in ModelState.Keys)
-            {
-                var value = ModelState[key];
-                foreach (var info in value.Errors)
-                {
-                    summary.Append(key + ":" + info);
-                }
-            }
-            return summary.ToString();
         }
     }
 }

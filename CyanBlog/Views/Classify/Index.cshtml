@@ -1,33 +1,26 @@
 ﻿@model List<Classify>
 @{
-    List<List<Blog>> blogGroup = ViewData["BlogGroup"] as List<List<Blog>>;
+    List<List<Blog>> blogGroup = ViewBag.BlogGroup;
     ViewData["Title"] = "分类";
 }
 
 <div class="layui-col-md8 layui-col-md-offset2" style="min-height: 100%;height: 100%;">
     <div class="layui-tab layui-tab-brief layui-panel  glass-container" style="padding:32px;margin-bottom:32px;">
-        @foreach(Classify classify in Model)
+        @for (int i=0;i<Model.Count;i++)
         {
             <ul class="layui-tab-title">
-                <li class="layui-this layui-font-20">@classify.Name</li>
+                <li class="layui-this layui-font-20">@Model[i].Name</li>
             </ul>
             <div class="layui-tab-content ">
                 <div class="layui-tab-item layui-show">
-                    @for (int i = 0;i<blogGroup.Count;i++)
+                    @foreach (Blog blog in blogGroup[i])
                     {
-                        @if (blogGroup[i].Count > 0 && (blogGroup[i][0].ClassId == classify.ClassId))
-                        {
-                            @foreach (Blog blog in blogGroup[i])
-                            {
-                                <div class="layui-panel  glass-item" style="margin-bottom: 32px;">
-                                    <div style="padding: 32px;">
-                                        <h2><a asp-controller="Blog" asp-action="Details" asp-route-id="@blog.BlogID">@blog.Title</a></h2>
-                                        <p>@blog.Description</p>
-                                    </div>
-                                </div>
-                            }
-                            break;
-                        }
+                        <div class="layui-panel  glass-item" style="margin-bottom: 32px;">
+                            <div style="padding: 32px;">
+                                <h2><a asp-controller="Blog" asp-action="Details" asp-route-id="@blog.BlogID">@blog.Title</a></h2>
+                                <p>@blog.Description</p>
+                            </div>
+                        </div>
                     }
                 </div>
             </div>

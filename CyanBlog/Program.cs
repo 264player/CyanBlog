@@ -1,6 +1,7 @@
 using System.Text;
 using CyanBlog.DbAccess.Context;
 using CyanBlog.Filter;
+using CyanBlog.Middleware;
 using Humanizer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +10,15 @@ using NLog.Extensions.Logging;
 
 namespace CyanBlog
 {
+    /// <summary>
+    /// 程序的入口类
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// 程序的入口方法
+        /// </summary>
+        /// <param name="args">命令行参数</param>
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -80,7 +88,11 @@ namespace CyanBlog
 
             builder.Services.AddAuthorization();
 
+            builder.Services.AddTransient<AdminCheckMiddleware>();
+
             var app = builder.Build();
+
+            app.UseMiddleware<AdminCheckMiddleware>();
 
             using(var scope = app.Services.CreateScope())
             {

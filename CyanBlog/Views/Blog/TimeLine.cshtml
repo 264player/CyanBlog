@@ -8,25 +8,25 @@
         <div class="layui-col-md8 layui-col-md-offset2 layui-panel  glass-container" style="margin-bottom:32px;padding:32px;">
             <div class="layui-timeline" style="padding-top:32px;">
                 <div class="layui-timeline-item">
-                    <i class="layui-timeline-axis layui-icon layui-icon-loading-1 layui-anim-rotate layui-anim-loop" style="font-size:26px;"></i>
+                    <i class="layui-timeline-axis layui-icon"></i>
                     <div class="layui-timeline-content">
-                        <h2 class="layui-timeline-title">即将到来的明日</h2>
+                        <h3 class="layui-timeline-title">即将到来的明日</h3>
                     </div>
                 </div>
                 @foreach(Blog blog in Model)
                 {
                     <div class="layui-timeline-item">
-                        <i class="layui-timeline-axis layui-icon layui-icon-radio" style="font-size:26px;"></i>
+                        <i class="layui-timeline-axis layui-icon"></i>
                         <div class="layui-timeline-content">
-                            <h2 class="layui-timeline-title">@blog.CreateTime.ToString("yyyy年MM月dd日")</h2>
+                            <p class="layui-timeline-title">@blog.CreateTime.ToString("yyyy年MM月dd日")</p>
                             <a asp-controller="Blog" asp-action="Details" asp-route-id="@blog.BlogID"><h3>@blog.Title</h3></a>
                         </div>
                     </div>
                 }
                 <div class="layui-timeline-item">
-                    <i class="layui-timeline-axis layui-icon layui-icon-unlink" style="font-size:26px;"></i>
+                    <i class="layui-timeline-axis layui-icon"></i>
                     <div class="layui-timeline-content">
-                        <h2 class="layui-timeline-title">已经逝去的昨日</h2>
+                        <h3 class="layui-timeline-title">已经逝去的昨日</2>
                     </div>
                 </div>
             </div>
