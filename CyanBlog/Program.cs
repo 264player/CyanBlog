@@ -86,7 +86,6 @@ namespace CyanBlog
                      OnAuthenticationFailed = context =>
                      {
                          context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                         context.Response.ContentType = "application/json";
                          return Task.CompletedTask;
                      }
                  };
@@ -95,10 +94,12 @@ namespace CyanBlog
             builder.Services.AddAuthorization();
 
             builder.Services.AddTransient<AdminCheckMiddleware>();
+            builder.Services.AddTransient<ErrorHandlingMiddleware>();
 
             var app = builder.Build();
 
-            app.UseMiddleware<AdminCheckMiddleware>();
+            //÷–º‰º˛≈‰÷√
+           
 
             using(var scope = app.Services.CreateScope())
             {
@@ -125,13 +126,21 @@ namespace CyanBlog
                 await next();
             });
 
+            
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+
+
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseMiddleware<AdminCheckMiddleware>();
+
 
             app.MapControllerRoute(
                 name: "default",

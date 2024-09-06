@@ -10,7 +10,7 @@
     <form class="layui-form" asp-action="UploadImage" asp-controller="File" method="post" enctype="multipart/form-data">
         <div class="layui-form-item">
             <label for="uploadbutton" class="layui-btn"><i class="layui-icon layui-icon-upload"></i>选择文件</label>
-            <input id="uploadbutton" class="layui-hide" multiple="true" type="file" name="image" accept="image/*" />
+            <input name="images" id="uploadbutton" class="layui-hide" multiple type="file" name="image" accept="image/*" />
         </div>
         <div class="layui-form-item">
             <input class="layui-btn" type="submit" value="上传"/>

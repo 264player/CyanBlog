@@ -57,41 +57,45 @@ namespace CyanBlog.Controllers
         /// 上传图片的接口
         /// 上传成功或失败的信息存放到ViewData["UploadInfo"]中
         /// </summary>
-        /// <param name="image">表单中上传的图片文件</param>
+        /// <param name="images">表单中上传的图片文件</param>
         /// <returns>上传成功则继续返回上传界面，并返回成功信息。如果失败就返回失败的信息。</returns>
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> UploadImage(IFormFile image)
+        public async Task<ActionResult> UploadImage(List<IFormFile> images)
         {
-            if (image == null || image.Length == 0)
+
+            if (images == null || images.Count == 0)
             {
                 ViewData["UploadInfo"] = "上传图片不能为空！";
                 return View();
             }
-
-            string[] permittedExtensions = new string[] { ".jpg","jpeg",".png",".gif" };
-            string extension = Path.GetExtension(image.FileName).ToLowerInvariant();
-
-            if(string.IsNullOrEmpty(extension) || !permittedExtensions.Contains(extension))
+            foreach(IFormFile image in images)
             {
-                ViewData["UploadInfo"] = "上传图片格式有误！";
-                return View();
+                string[] permittedExtensions = new string[] { ".jpg", "jpeg", ".png", ".gif" };
+                string extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+
+                if (string.IsNullOrEmpty(extension) || !permittedExtensions.Contains(extension))
+                {
+                    ViewData["UploadInfo"] = "上传图片格式有误！"; //有错误的文件将跳过
+                    continue;
+                }
+
+                string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+
+                if (!Directory.Exists(savePath))
+                {
+                    Directory.CreateDirectory(savePath);
+                }
+
+                string fileName = Path.GetRandomFileName() + extension;
+                string filePath = Path.Combine(savePath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
             }
-
-            string savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-
-            if (!Directory.Exists(savePath))
-            {
-                Directory.CreateDirectory(savePath);
-            }
-
-            string fileName = Path.GetRandomFileName() + extension;
-            string filePath = Path.Combine(savePath, fileName);
-
-            using(var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await image.CopyToAsync(stream);
-            }
+            
 
             ViewData["UploadInfo"] = "上传成功！";
             return View();

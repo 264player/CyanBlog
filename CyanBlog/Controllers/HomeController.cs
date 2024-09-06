@@ -29,5 +29,16 @@ namespace CyanBlog.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        /// <summary>
+        /// 错误代码页面
+        /// </summary>
+        /// <param name="message">错误信息</param>
+        /// <param name="code">错误代码</param>
+        /// <returns></returns>
+        public ActionResult ErrorCodePage(int code,string message)
+        {
+            return View(new ErrorCode(code,message));
+        }
     }
 }
