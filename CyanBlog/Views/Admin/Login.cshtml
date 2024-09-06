@@ -11,7 +11,7 @@
         <div class="layui-form-item">
             <label class="">
                 @Html.DisplayNameFor(model => model.UserName)
-                <input class="layui-input" type="text" asp-for="UserName" />
+                <input class="layui-input" type="text" asp-for="UserName" value="@Model.UserName"/>
             </label>
             <span asp-validation-for="UserName" class="layui-font-red"></span>
         </div>
@@ -19,7 +19,7 @@
         <div class="layui-form-item">
             <label class="">
                 @Html.DisplayNameFor(model => model.Password)
-                <input class="layui-input" type="text" asp-for="Password" />
+                <input class="layui-input" type="password" asp-for="Password" value="@Model.Password"/>
             </label>
             <span asp-validation-for="Password" class="layui-font-red"></span>
         </div>

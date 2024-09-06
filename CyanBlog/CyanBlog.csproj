@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\pictrues\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,15 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "图片资源";
+}
+@model List<string>
+
+<div class="layui-col-md8 layui-col-md-offset2 layui-panel glass-container" style="padding:32px;margin-bottom:32px; min-height: 100%;height: 100%;">
+    @foreach(string path in Model)
+    {
+        <div class="layui-row glass-container" style="margin:1em;">
+            <img src="http://@path" height="100px" width="100px" />
+            <code><a href="http://@path">@path</a></code>
+        </div>
+    }
+</div>

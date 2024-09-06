@@ -77,7 +77,7 @@ namespace CyanBlog.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return View(new UserLoginDto());
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="model">管理员登录信息</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost(Name ="LoginNext")]
         public IActionResult LoginNext(UserLoginDto model)
         {
             var authenticatedUser = AuthenticateUser(model);
@@ -102,9 +102,7 @@ namespace CyanBlog.Controllers
 
                 return RedirectToAction("ViewList", "Blog");
             }
-
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-            return View(model);
+            return View("login",model);
         }
 
         /// <summary>
