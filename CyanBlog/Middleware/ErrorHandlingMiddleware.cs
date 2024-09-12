@@ -1,6 +1,7 @@
 ﻿
 using CyanBlog.Models;
 using Microsoft.AspNetCore.Http;
+using System.Web;
 
 namespace CyanBlog.Middleware
 {
@@ -76,7 +77,8 @@ namespace CyanBlog.Middleware
             }
             if (isHandle)
             {
-                context.Response.Redirect($"/Home/ErrorCodePage?code={statusCode}&message={"error"}");
+                context.Response.Redirect($"/Home/ErrorCodePage?code={statusCode}&message={HttpUtility.UrlEncode(message)}");
+                return;
             }   
         }
     }

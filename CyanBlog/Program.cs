@@ -1,4 +1,5 @@
 using System.Text;
+using CyanBlog.BackGroudService;
 using CyanBlog.DbAccess.Context;
 using CyanBlog.Filter;
 using CyanBlog.Middleware;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NLog.Extensions.Logging;
+using RabbitMQ.Client;
 
 namespace CyanBlog
 {
@@ -90,6 +92,26 @@ namespace CyanBlog
                      }
                  };
              });
+
+            #region rabbitmq
+
+            var factory = new ConnectionFactory() { HostName = "localhost" }; // 配置 RabbitMQ 地址
+            var connection = factory.CreateConnection();
+            var channel = connection.CreateModel();
+
+            // 声明队列
+            channel.QueueDeclare(queue: "viewcount_queue",
+                                 durable: false,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
+
+            // 将 RabbitMQ 信道注入服务
+            builder.Services.AddSingleton(channel);
+
+            builder.Services.AddHostedService<RabbitMqConsumerService>();
+
+            #endregion
 
             builder.Services.AddAuthorization();
 

@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using System.Text;
+using System.Threading.Channels;
+using Channel = RabbitMQ.Client.IModel;
 
 namespace CyanBlog.Controllers
 {
@@ -23,14 +27,21 @@ namespace CyanBlog.Controllers
         private CyanBlogDbContext _dbContext;
 
         /// <summary>
+        /// 消息队列连接
+        /// </summary>
+        private Channel _channel;
+
+        /// <summary>
         /// 带有日志输出器和数据库上下文的构造方法
         /// </summary>
         /// <param name="logger">日志输出器</param>
         /// <param name="dbContext">CyanBlog数据库上下文</param>
-        public BlogController(ILogger<BlogController> logger, CyanBlogDbContext dbContext)
+        /// <param name="channel">消息队列连接</param>
+        public BlogController(ILogger<BlogController> logger, CyanBlogDbContext dbContext, Channel channel)
         {
             _logger = logger;
             _dbContext = dbContext;
+            _channel = channel;
         }
 
 
@@ -60,7 +71,7 @@ namespace CyanBlog.Controllers
             }
             Blog? blog = await _dbContext.Blog.Include(b=>b.Classify).FirstAsync(b => b.BlogID == id);
             List<Comment> comments = await _dbContext.Comment.Where(comment=>comment.BlogID == id).Include(c=>c.User).ToListAsync();
-            blog.ViewCount++;
+            blogViewCountIncreament(id);
             await _dbContext.SaveChangesAsync();
             if (blog == null)
             {
@@ -69,6 +80,20 @@ namespace CyanBlog.Controllers
             ViewData["BlogDetails"] = blog;
             ViewData["CommentList"] = comments;
             return View();
+        }
+
+        /// <summary>
+        /// 博客的浏览量增加
+        /// </summary>
+        private void blogViewCountIncreament(uint? blogID)
+        {
+            var message = blogID.ToString();
+            var body = Encoding.UTF8.GetBytes(message);
+            _channel.BasicPublish(exchange: "",
+                                 routingKey: "viewcount_queue",
+                                 mandatory: false,
+                                 basicProperties: null,
+                                 body: body);
         }
 
         /// <summary>
