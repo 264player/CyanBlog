@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CyanBlog", "CyanBlog\CyanBlog.csproj", "{6187FAE5-971B-4583-B7C3-2A877BFE43BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CyanBlog", "CyanBlog\CyanBlog.csproj", "{6187FAE5-971B-4583-B7C3-2A877BFE43BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CyanBlogTest", "CyanBlogTest\CyanBlogTest.csproj", "{0A06F93B-7690-4778-965B-C483411BBF1D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6187FAE5-971B-4583-B7C3-2A877BFE43BC} = {6187FAE5-971B-4583-B7C3-2A877BFE43BC}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{6187FAE5-971B-4583-B7C3-2A877BFE43BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6187FAE5-971B-4583-B7C3-2A877BFE43BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6187FAE5-971B-4583-B7C3-2A877BFE43BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A06F93B-7690-4778-965B-C483411BBF1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A06F93B-7690-4778-965B-C483411BBF1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A06F93B-7690-4778-965B-C483411BBF1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A06F93B-7690-4778-965B-C483411BBF1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

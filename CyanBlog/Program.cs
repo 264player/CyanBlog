@@ -3,7 +3,6 @@ using CyanBlog.BackGroudService;
 using CyanBlog.DbAccess.Context;
 using CyanBlog.Filter;
 using CyanBlog.Middleware;
-using Humanizer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

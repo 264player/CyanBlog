@@ -43,8 +43,6 @@ namespace CyanBlog.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            var ip = GetUserIp();
-            _logger.LogInformation($"\n{ip}访问Message-Index");
             List<Message> messages = await _context.Message.OrderByDescending(m => m.MessageId).Include(m=>m.User).ToListAsync();
             ViewBag.MessageList = messages;
             return View();
@@ -59,8 +57,6 @@ namespace CyanBlog.Controllers
         [Authorize]
         public async Task<ActionResult> ViewList()
         {
-            var ip = GetUserIp();
-            _logger.LogInformation($"\n{ip}访问Message-Index");
             List<Message> messages = await _context.Message.OrderByDescending(m => m.MessageId).Include(u => u.User).Select(m =>new Message(){
                 MessageId = m.MessageId,
                 Content = m.Content,
@@ -114,7 +110,7 @@ namespace CyanBlog.Controllers
             }
 
             message.User.Password = MD5.HashData(Encoding.UTF8.GetBytes($"{message.User.UserId}-{message.User.Email}")).ToString() ?? "Cyanmoon";
-            _logger.LogInformation($"\n{GetUserIp()}参与了评论。\n用户编号为{message.User.UserId}");
+            //_logger.LogInformation($"\n{GetUserIp()}参与了评论。\n用户编号为{message.User.UserId}");
             _context.Message.Add(message);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
