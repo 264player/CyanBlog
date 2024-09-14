@@ -31,7 +31,7 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="context">数据库上下文</param>
         /// <param name="logger">日志记录器</param>
-        public FriendsController(CyanBlogDbContext context, ILogger<FriendsController> logger)
+        public FriendsController(ILogger<FriendsController> logger, CyanBlogDbContext context)
         {
             _context = context;
             _logger = logger;
@@ -40,6 +40,7 @@ namespace CyanBlog.Controllers
         /// <summary>
         /// 友链首页,需要查询所有友链然后通过viewbag传递给视图
         /// ViewBag.FriendList
+        /// 列表按照id升序排列
         /// </summary>
         /// <returns>友链首页</returns>
         public async Task<IActionResult> Index()
@@ -71,8 +72,6 @@ namespace CyanBlog.Controllers
             return View(friend);
         }
 
-
-        // POST: Friends/Create
         /// <summary>
         /// 创建新的友链，只绑定标题和url
         /// </summary>
@@ -156,7 +155,7 @@ namespace CyanBlog.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        public async Task<IActionResult> DeleteVIew(uint? id)
+        public async Task<IActionResult> DeleteView(uint? id)
         {
             if (id == null || _context.Friend == null)
             {

@@ -18,7 +18,7 @@ namespace CyanBlog.Controllers
         /// <summary>
         /// 日志输出器
         /// </summary>
-        private ILogger<MessageController> _logger;
+        private ILogger<CommentController> _logger;
 
         /// <summary>
         /// CyanBlog数据库上下文
@@ -30,22 +30,10 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="logger">日志输出器</param>
         /// <param name="dbContext">cyanblog数据库上下文</param>
-        public CommentController(ILogger<MessageController> logger, CyanBlogDbContext dbContext)
+        public CommentController(ILogger<CommentController> logger, CyanBlogDbContext dbContext)
         {
             _logger = logger;
             _context = dbContext;
-        }
-
-        /// <summary>
-        /// 首页，留言列表
-        /// </summary>
-        /// <returns>首页页面</returns>
-        // GET: MessageController
-        public async Task<ActionResult> Index()
-        {
-            List<Message> messages = await _context.Message.OrderByDescending(m => m.MessageId).ToListAsync();
-            ViewBag.MessageList = messages;
-            return View();
         }
 
         /// <summary>
@@ -95,7 +83,7 @@ namespace CyanBlog.Controllers
                 Blog? exitBlog = await _context.Blog.FirstOrDefaultAsync(b => comment.BlogID == b.BlogID);
             if (exitBlog != null)
                 comment.FatherBlog = exitBlog;
-            _logger.LogInformation($"\n{GetUserIp()}参与了评论。\n用户编号为{comment.User.UserId}");
+            //_logger.LogInformation($"\n{GetUserIp()}参与了评论。\n用户编号为{comment.User.UserId}");
             _context.Comment.Add(comment);
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", "Blog", new { id= $"{comment.BlogID}" });
