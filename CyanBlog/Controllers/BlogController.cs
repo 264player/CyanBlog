@@ -44,7 +44,16 @@ namespace CyanBlog.Controllers
             _channel = channel;
         }
 
-
+        /// <summary>
+        ///  带有日志输出器和数据库上下文的构造方法
+        /// </summary>
+        /// <param name="logger">日志输出器</param>
+        /// <param name="dbContext">CyanBlog数据库上下文</param>
+        public BlogController(ILogger<BlogController> logger, CyanBlogDbContext dbContext)
+        {
+            _logger = logger;
+            _dbContext = dbContext;
+        }
 
 
         /// <summary>
@@ -54,7 +63,7 @@ namespace CyanBlog.Controllers
         // GET: BlogController
         public async Task<ActionResult> Index()
         {
-            return View(await _dbContext.Blog.OrderByDescending(blog => blog.BlogID).ToListAsync<Blog>());
+            return View(await _dbContext.Blog.OrderByDescending(blog => blog.BlogID).ToListAsync());
         }
 
         /// <summary>
@@ -124,7 +133,7 @@ namespace CyanBlog.Controllers
             if(exitclassify != null)
                 blog.Classify = exitclassify;
             await _dbContext.Blog.AddAsync(blog);
-            _logger.LogInformation($"新增了一个博客{blog.BlogID}--{blog.Title}");
+            //_logger.LogInformation($"新增了一个博客{blog.BlogID}--{blog.Title}");
             _dbContext.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -213,7 +222,7 @@ namespace CyanBlog.Controllers
         [Authorize]
         public async Task<ActionResult> ViewList()
         {
-            return View(await _dbContext.Blog.OrderByDescending(blog => blog.BlogID).ToListAsync<Blog>());
+            return View(await _dbContext.Blog.OrderByDescending(blog => blog.BlogID).ToListAsync());
         }
 
         /// <summary>
