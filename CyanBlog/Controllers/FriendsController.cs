@@ -45,7 +45,7 @@ namespace CyanBlog.Controllers
         /// <returns>友链首页</returns>
         public async Task<IActionResult> Index()
         {
-            List<Friend> friends = await _context.Friend.ToListAsync();
+            List<Friend> friends = await _GetFriendListAsync(false);
             ViewBag.FriendList = friends;
             return View();
         }
@@ -57,19 +57,18 @@ namespace CyanBlog.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Details(uint? id)
         {
-            if (id == null || _context.Friend == null)
+            if (id == null)
             {
                 return NotFound();
-            }
-
-            var friend = await _context.Friend
-                .FirstOrDefaultAsync(m => m.FriendId == id);
-            if (friend == null)
+            }else
             {
-                return NotFound();
+                Friend? friend = await _GetFriendAsync((uint)id);
+                if (friend == null)
+                {
+                    return NotFound();
+                }
+                return View(friend);
             }
-
-            return View(friend);
         }
 
         /// <summary>
@@ -97,17 +96,19 @@ namespace CyanBlog.Controllers
         [Authorize]
         public async Task<IActionResult> EditView(uint? id)
         {
-            if (id == null || _context.Friend == null)
+            if (id == null)
             {
                 return NotFound();
             }
-
-            var friend = await _context.Friend.FindAsync(id);
-            if (friend == null)
+            else
             {
-                return NotFound();
-            }
-            return View("Edit",friend);
+                Friend? friend = await _GetFriendAsync((uint)id);
+                if (friend == null)
+                {
+                    return NotFound();
+                }
+                return View("Edit", friend);
+            }   
         }
 
         /// <summary>
@@ -157,19 +158,19 @@ namespace CyanBlog.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteView(uint? id)
         {
-            if (id == null || _context.Friend == null)
+            if (id == null)
             {
                 return NotFound();
             }
-
-            var friend = await _context.Friend
-                .FirstOrDefaultAsync(m => m.FriendId == id);
-            if (friend == null)
+            else
             {
-                return NotFound();
+                Friend? friend = await _GetFriendAsync((uint)id);
+                if (friend == null)
+                {
+                    return NotFound();
+                }
+                return View("Delete", friend);
             }
-
-            return View("Delete",friend);
         }
         
         /// <summary>
@@ -206,7 +207,6 @@ namespace CyanBlog.Controllers
           return (_context.Friend?.Any(e => e.FriendId == id)).GetValueOrDefault();
         }
 
-
         /// <summary>
         /// 友链的管理界面
         /// </summary>
@@ -215,8 +215,31 @@ namespace CyanBlog.Controllers
         [Authorize]
         public async Task<ActionResult> ViewList()
         {
-            List<Friend> friends = await _context.Friend.OrderByDescending(m => m.FriendId).ToListAsync();
+            List<Friend> friends = await _GetFriendListAsync(true);
             return View(friends);
+        }
+
+        /// <summary>
+        /// 获取友链列表，不追踪实体，提高性能
+        /// </summary>
+        /// <param name="isDes">是否按照主键降序排列</param>
+        /// <returns></returns>
+        private async Task<List<Friend>> _GetFriendListAsync(bool isDes)
+        {
+            if(isDes)
+                return await _context.Friend.AsNoTracking().OrderByDescending(friend => friend.FriendId).ToListAsync();
+            else
+                return await _context.Friend.AsNoTracking().OrderBy(friend => friend.FriendId).ToListAsync();
+        }
+
+        /// <summary>
+        /// 根据主键获取对应实体，如果没有查询到对应实体则返回空
+        /// </summary>
+        /// <param name="id">待查询的友链主键</param>
+        /// <returns>查询到则返回对应友链，否则返回空</returns>
+        private async Task<Friend?> _GetFriendAsync(uint id)
+        {
+            return await _context.Friend.FindAsync(id);
         }
     }
 }

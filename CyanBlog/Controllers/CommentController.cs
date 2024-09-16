@@ -44,7 +44,7 @@ namespace CyanBlog.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(uint id)
         {
-            Comment? comment = await _context.Comment.FindAsync(id);
+            Comment? comment = await _GetCommentAsync(id);
             if(comment == null)
                 return NotFound();
             else
@@ -83,7 +83,6 @@ namespace CyanBlog.Controllers
                 Blog? exitBlog = await _context.Blog.FirstOrDefaultAsync(b => comment.BlogID == b.BlogID);
             if (exitBlog != null)
                 comment.FatherBlog = exitBlog;
-            //_logger.LogInformation($"\n{GetUserIp()}参与了评论。\n用户编号为{comment.User.UserId}");
             _context.Comment.Add(comment);
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", "Blog", new { id= $"{comment.BlogID}" });
@@ -97,10 +96,9 @@ namespace CyanBlog.Controllers
         [HttpGet]
         public async Task<ActionResult> Delete(uint id)
         {
-            Comment? comment = await _context.Comment.FindAsync(id);
+            Comment? comment = await _GetCommentAsync(id);
             return View(comment);
         }
-
 
         /// <summary>
         /// 管理员方法
@@ -112,7 +110,7 @@ namespace CyanBlog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteComment(uint id)
         {
-            Comment? comment = await _context.Comment.FindAsync(id);
+            Comment? comment = await _GetCommentAsync(id);
             if (comment != null) {
                 _context.Comment.Remove(comment);
                 await _context.SaveChangesAsync();
@@ -127,16 +125,30 @@ namespace CyanBlog.Controllers
         [Authorize]
         public async Task<ActionResult> ViewList()
         {
-            return View(await _context.Comment.OrderByDescending(c=>c.CommentId).ToListAsync());
+            return View(await _GetCommentListAsync(true));
         }
 
         /// <summary>
-        /// 获取访问服务器的ip地址，如果查询ip错误，则返回kongip；
+        /// 获取评论列表，不追踪实体，提高性能
         /// </summary>
-        /// <returns>用户ip地址或者空ip</returns>
-        private string GetUserIp()
+        /// <param name="isDes">是否以主键递减的顺序排列</param>
+        /// <returns>评论的所有列表</returns>
+        private async Task<List<Comment>> _GetCommentListAsync(bool isDes)
         {
-            return HttpContext.Connection.RemoteIpAddress != null ? HttpContext.Connection.RemoteIpAddress.ToString() : "空IP";
+            if(isDes)
+                return await _context.Comment.AsNoTracking().OrderByDescending(comment=>comment.CommentId).ToListAsync();
+            else
+                return await _context.Comment.AsNoTracking().OrderBy(comment => comment.CommentId).ToListAsync();
+        }
+
+        /// <summary>
+        /// 获取指定主键对应的评论实体
+        /// </summary>
+        /// <param name="id">评论id</param>
+        /// <returns>对应id的评论实体</returns>
+        private async Task<Comment?> _GetCommentAsync(uint id)
+        {
+            return await _context.Comment.FindAsync(id);
         }
     }
 }

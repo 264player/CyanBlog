@@ -43,11 +43,10 @@ namespace CyanBlog.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            List<Message> messages = await _context.Message.OrderByDescending(m => m.MessageId).Include(m=>m.User).ToListAsync();
+            List<Message> messages = await _GetAllMessageListAsync(true);
             ViewBag.MessageList = messages;
             return View();
         }
-
 
         /// <summary>
         /// 浏览管理列表，需要认证
@@ -57,17 +56,9 @@ namespace CyanBlog.Controllers
         [Authorize]
         public async Task<ActionResult> ViewList()
         {
-            List<Message> messages = await _context.Message.OrderByDescending(m => m.MessageId).Include(u => u.User).Select(m =>new Message(){
-                MessageId = m.MessageId,
-                Content = m.Content,
-                UserId = m.UserId,
-                CreateTime = m.CreateTime,
-                ManagerId = m.ManagerId,
-                User = m.User,
-            }) .ToListAsync();
+            List<Message> messages = await _GetAllMessageListAsync(true);
             return View(messages);
         }
-
 
         /// <summary>
         /// 留言详情
@@ -75,10 +66,10 @@ namespace CyanBlog.Controllers
         /// <param name="id">留言id</param>
         /// <returns>留言详情页面</returns>
         [HttpGet]
-        public ActionResult Details(uint id)
+        public async Task<ActionResult> Details(uint id)
         {
-            Message? message = _context.Message.Find(id);
-            if(message == null)
+            Message? message = await _GetMessageByIDAsync(id);
+            if (message == null)
                 return NotFound();
             return View(message);
         }
@@ -88,7 +79,6 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="message">表单提交上来的留言信息</param>
         /// <returns>正确访问并提交就返回到留言首页，非正常提交就返回到NotFound</returns>
-        // POST: MessageController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create( Message message)
@@ -123,9 +113,9 @@ namespace CyanBlog.Controllers
         /// <returns>返回留言编辑界面</returns>
         [HttpGet]
         [Authorize]
-        public ActionResult EditView(uint id)
+        public async Task<ActionResult> EditView(uint id)
         {
-            Message? message = _context.Message.Find(id);
+            Message? message = await _GetMessageByIDAsync(id);
             if (message == null)
                 return NotFound();
             return View("Edit",message);
@@ -139,13 +129,12 @@ namespace CyanBlog.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Edit(Message message)
+        public async Task<ActionResult> Edit(Message message)
         {
             User? exitUser = _context.User.Find(message.UserId);
             if(exitUser != null)
                 message.User = exitUser;
-            _context.Message.Update(message);
-            _context.SaveChanges();
+            await _UpdateMessageAndSaveAsync(message);
             return RedirectToAction("ViewList");
         }
 
@@ -156,9 +145,9 @@ namespace CyanBlog.Controllers
         /// <returns>删除留言界面的id</returns>
         [HttpGet]
         [Authorize]
-        public ActionResult DeleteView(uint id)
+        public async Task<ActionResult> DeleteView(uint id)
         {
-            Message? message = _context.Message.Find(id);
+            Message? message = await _GetMessageByIDAsync(id);
             if (message == null)
                 return NotFound();
             return View("Delete",message);
@@ -172,38 +161,59 @@ namespace CyanBlog.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Delete(uint id)
+        public async Task<ActionResult> Delete(uint id)
         {
-            Message? message = _context.Message.Find(id);
-            if (message == null)
-                return View("ViewList");
-            _context.Message.Remove(message);
-            _context.SaveChanges();
+            Message? message = await _GetMessageByIDAsync(id);
+            if (message != null)
+            {
+                await _RemoveMessageAndSaveAsync(message);
+            }
             return RedirectToAction("ViewList");
         }
 
         /// <summary>
-        /// 获取访问服务器的ip地址，如果查询ip错误，则返回kongip；
+        /// 获取所有留言，提升性能，不追踪实体
         /// </summary>
-        /// <returns>用户ip地址或者空ip</returns>
-        private string GetUserIp()
+        /// <param name="isDes">是否以降序排列</param>
+        /// <returns>按照降序或者升序排列的留言列表</returns>
+        private async Task<List<Message>> _GetAllMessageListAsync(bool isDes)
         {
-            return HttpContext.Connection.RemoteIpAddress != null ? HttpContext.Connection.RemoteIpAddress.ToString() : "空IP";
+            if (isDes)
+                return await _context.Message.AsNoTracking().OrderByDescending(message => message.MessageId).ToListAsync();
+            else
+                return await _context.Message.AsNoTracking().OrderBy(message => message.MessageId).ToListAsync();
         }
 
-
-        private string LogModelState()
+        /// <summary>
+        /// 获取对应ID的Message实体
+        /// </summary>
+        /// <param name="id">需要获取的实体ID</param>
+        /// <returns>与参数ID对应的实体</returns>
+        private async Task<Message?> _GetMessageByIDAsync(uint id)
         {
-            StringBuilder summary = new StringBuilder();
-            foreach (var key in ModelState.Keys)
-            {
-                var value = ModelState[key];
-                foreach (var info in value.Errors)
-                {
-                    summary.Append(key + ":" + info);
-                }
-            }
-            return summary.ToString();
+            return await _context.Message.FindAsync(id);
+        }
+
+        /// <summary>
+        /// 删除指定的message，并对数据库进行保存
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private async Task<bool> _RemoveMessageAndSaveAsync(Message message)
+        {
+            _context.Message.Remove(message);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        /// <summary>
+        /// 按照messageid更新指定的message，并对u数据库进行保存
+        /// </summary>
+        /// <param name="message">要更新的message</param>
+        /// <returns>是否操作成功</returns>
+        private async Task<bool> _UpdateMessageAndSaveAsync(Message message)
+        {
+            _context.Message.Update(message);
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

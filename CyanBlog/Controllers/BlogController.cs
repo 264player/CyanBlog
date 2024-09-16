@@ -24,7 +24,7 @@ namespace CyanBlog.Controllers
         /// <summary>
         /// CyanBlog数据库上下文
         /// </summary>
-        private CyanBlogDbContext _dbContext;
+        private CyanBlogDbContext _context;
 
         /// <summary>
         /// 消息队列连接
@@ -40,7 +40,7 @@ namespace CyanBlog.Controllers
         public BlogController(ILogger<BlogController> logger, CyanBlogDbContext dbContext, Channel channel)
         {
             _logger = logger;
-            _dbContext = dbContext;
+            _context = dbContext;
             _channel = channel;
         }
 
@@ -52,7 +52,7 @@ namespace CyanBlog.Controllers
         public BlogController(ILogger<BlogController> logger, CyanBlogDbContext dbContext)
         {
             _logger = logger;
-            _dbContext = dbContext;
+            _context = dbContext;
         }
 
 
@@ -60,10 +60,9 @@ namespace CyanBlog.Controllers
         /// 博客首页
         /// </summary>
         /// <returns></returns>
-        // GET: BlogController
         public async Task<ActionResult> Index()
         {
-            return View(await _dbContext.Blog.OrderByDescending(blog => blog.BlogID).ToListAsync());
+            return View(await _GetBlogListAsync(true));
         }
 
         /// <summary>
@@ -71,17 +70,16 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="id">博客id</param>
         /// <returns></returns>
-        // GET: BlogController/Details/5
         public async Task<ActionResult> Details(uint? id)
         {
             if(id == null)
             {
                 NotFound();
             }
-            Blog? blog = await _dbContext.Blog.Include(b=>b.Classify).FirstAsync(b => b.BlogID == id);
-            List<Comment> comments = await _dbContext.Comment.Where(comment=>comment.BlogID == id).Include(c=>c.User).ToListAsync();
+            Blog? blog = await _context.Blog.Include(b=>b.Classify).FirstAsync(b => b.BlogID == id);
+            List<Comment> comments = await _context.Comment.Where(comment=>comment.BlogID == id).Include(c=>c.User).ToListAsync();
             blogViewCountIncreament(id);
-            await _dbContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             if (blog == null)
             {
                 NotFound();
@@ -109,12 +107,11 @@ namespace CyanBlog.Controllers
         /// 新建博客页面
         /// </summary>
         /// <returns>返回新建博客页面</returns>
-        // GET: BlogController/Create
         [Authorize]
         [HttpGet]
         public async Task<ActionResult> CreateBlog()
         {
-            ViewData["ClassifyList"] = await _dbContext.Classify.ToListAsync();
+            ViewData["ClassifyList"] = await _context.Classify.ToListAsync();
             return View("Create");
         }
 
@@ -123,18 +120,17 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="blog">需要提交的博客</param>
         /// <returns>返回到首页</returns>
-        // POST: BlogController/Create
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Blog blog)
         {
-            Classify? exitclassify =  await _dbContext.Classify.FirstOrDefaultAsync(c => c.Name.CompareTo(blog.Classify.Name)==0);
+            Classify? exitclassify =  await _context.Classify.FirstOrDefaultAsync(c => c.Name.CompareTo(blog.Classify.Name)==0);
             if(exitclassify != null)
                 blog.Classify = exitclassify;
-            await _dbContext.Blog.AddAsync(blog);
+            await _context.Blog.AddAsync(blog);
             //_logger.LogInformation($"新增了一个博客{blog.BlogID}--{blog.Title}");
-            _dbContext.SaveChanges();
+            _context.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -143,13 +139,12 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="id">待编辑的博客id</param>
         /// <returns>编辑博客页面</returns>
-        // GET: BlogController/Edit/5
         [Authorize]
         [HttpGet]
         public async Task<ActionResult> EditBlog(uint id)
         {
-            Blog? blog = _dbContext.Blog.Find(id);
-            ViewData["ClassifyList"] = await _dbContext.Classify.ToListAsync();
+            Blog? blog = await _GetBlogAsync(id);
+            ViewData["ClassifyList"] = await _context.Classify.ToListAsync();
             if (blog == null)
                 return NotFound();
             return View("Update", blog);
@@ -166,12 +161,12 @@ namespace CyanBlog.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Blog blog)
         {
-            Classify? exitclassify =  _dbContext.Classify.FirstOrDefault(c => c.Name.CompareTo(blog.Classify.Name) == 0);
+            Classify? exitclassify =  _context.Classify.FirstOrDefault(c => c.Name.CompareTo(blog.Classify.Name) == 0);
             if (exitclassify != null)
                 blog.Classify = exitclassify;
             blog.UpdateTime = DateTime.Now;
-            _dbContext.Blog.Update(blog);
-            _dbContext.SaveChanges();
+            _context.Blog.Update(blog);
+            _context.SaveChanges();
             return RedirectToAction("ViewList");
         }
 
@@ -188,7 +183,7 @@ namespace CyanBlog.Controllers
             {
                 NotFound();
             }
-            Blog? blog = await _dbContext.Blog.Include(b=>b.Classify).SingleAsync(b=>b.BlogID == id);
+            Blog? blog = await _context.Blog.Include(b=>b.Classify).SingleAsync(b=>b.BlogID == id);
             if (blog == null)
             {
                 NotFound();
@@ -206,11 +201,11 @@ namespace CyanBlog.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Remove(uint id)
         {
-            Blog? blog = _dbContext.Blog.Find(id);   
+            Blog? blog = _context.Blog.Find(id);   
             if(blog != null)
             {
-                _dbContext.Blog.Remove(blog);
-                _dbContext.SaveChanges();
+                _context.Blog.Remove(blog);
+                _context.SaveChanges();
             }
             return RedirectToAction("ViewList");
         }
@@ -222,7 +217,7 @@ namespace CyanBlog.Controllers
         [Authorize]
         public async Task<ActionResult> ViewList()
         {
-            return View(await _dbContext.Blog.OrderByDescending(blog => blog.BlogID).ToListAsync());
+            return View(await _GetBlogListAsync(true));
         }
 
         /// <summary>
@@ -231,8 +226,30 @@ namespace CyanBlog.Controllers
         /// <returns>返回时间线页面</returns>
         public async Task<ActionResult> TimeLine()
         {
-            var blogList = await _dbContext.Blog.OrderByDescending(b=>b.BlogID).ToListAsync();
-            return View(blogList);
+            return View(await _GetBlogListAsync(true));
+        }
+
+        /// <summary>
+        /// 获取全部博客，并按照指定的顺序排列，不追踪，提高性能
+        /// </summary>
+        /// <param name="isDes">是否按照主键降序排列</param>
+        /// <returns>所有的博客列表</returns>
+        private async Task<List<Blog>> _GetBlogListAsync(bool isDes)
+        {
+            if(isDes)
+                return await _context.Blog.AsNoTracking().OrderByDescending(blog=>blog.BlogID).ToListAsync();
+            else
+                return await _context.Blog.AsNoTracking().OrderBy(blog => blog.BlogID).ToListAsync();
+        }
+
+        /// <summary>
+        /// 获取对应主键的博客
+        /// </summary>
+        /// <param name="id">博客主键</param>
+        /// <returns>查找成功则返回对应博客，否则返回空</returns>
+        private async Task<Blog?> _GetBlogAsync(uint id)
+        {
+            return await _context.Blog.FindAsync(id);
         }
     }
 }

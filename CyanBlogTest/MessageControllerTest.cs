@@ -85,10 +85,10 @@ namespace CyanBlogTest
         /// </summary>
         /// <returns></returns>
         [Test]
-        public void Details_MessageModelTest()
+        public async Task Details_MessageModelTest()
         {
             uint messageId = 1;
-            var result = _controller.Details(id:messageId);
+            var result = await _controller.Details(id:messageId);
 
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult); // 检查是否返回了视图
@@ -102,10 +102,10 @@ namespace CyanBlogTest
         /// 测试视图deleteview的模型是否查找正常
         /// </summary>
         [Test]
-        public void Delete_ViewTest()
+        public async Task Delete_ViewTest()
         {
             uint messageId = 1;
-            var result = _controller.DeleteView(id: messageId);
+            var result = await _controller.DeleteView(id: messageId);
 
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult); // 检查是否返回了视图
@@ -119,10 +119,10 @@ namespace CyanBlogTest
         /// 测试视图deleteview的模型是否查找正常
         /// </summary>
         [Test]
-        public void Edit_ViewTest()
+        public async Task Edit_ViewTest()
         {
             uint messageId = 1;
-            var result = _controller.EditView(id: messageId);
+            var result = await _controller.EditView(id: messageId);
 
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult); // 检查是否返回了视图
@@ -137,10 +137,10 @@ namespace CyanBlogTest
         /// </summary>
         /// <returns></returns>
         [Test]
-        public void Delete_MessageTest()
+        public async Task Delete_MessageTest()
         {
             uint messageId = 1;
-            _controller.Delete(id: messageId);
+            await _controller.Delete(id: messageId);
             Message? message = _context.Message.Find(messageId);
             Assert.IsNull(message);
         }
@@ -163,12 +163,12 @@ namespace CyanBlogTest
         /// 测试修改新的Message，并在数据库检验是否创建成功
         /// </summary>
         [Test]
-        public void Update_MessageResultTest()
+        public async Task Update_MessageResultTest()
         {
             uint messageId = 1;
             Message? message = _context.Message.Find(messageId);
             message.Content = "UpdateMessage1!";
-            _controller.Edit(message);
+            await _controller.Edit(message);
             Message? result = _context.Message.Find(message.MessageId);
             Assert.IsNotNull(result);
             Assert.AreEqual(message.Content, result.Content);
