@@ -37,6 +37,7 @@ namespace CyanBlog.Controllers
         /// <param name="logger">日志输出器</param>
         /// <param name="dbContext">CyanBlog数据库上下文</param>
         /// <param name="channel">消息队列连接</param>
+        [ActivatorUtilitiesConstructor]
         public BlogController(ILogger<BlogController> logger, CyanBlogDbContext dbContext, Channel channel)
         {
             _logger = logger;
