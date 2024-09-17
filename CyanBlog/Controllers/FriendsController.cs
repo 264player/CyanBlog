@@ -76,7 +76,6 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="friend"></param>
         /// <returns></returns>
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Url")] Friend friend)

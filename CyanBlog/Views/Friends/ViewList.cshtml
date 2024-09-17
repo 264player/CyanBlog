@@ -9,6 +9,13 @@
         <a asp-action="Index" class="layui-btn layui-btn-radius">添加友链</a>
     </p>
     <table class="layui-table glass-item">
+        <colgroup>
+            <col width="30">
+            <col>
+            <col width="220">
+            <col width="220">
+            <col width="180">
+        </colgroup>
         <thead>
             <tr>
                 <th>
@@ -19,9 +26,6 @@
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Url)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.PictureUrl)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.CreateTime)
@@ -41,9 +45,6 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Url)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PictureUrl)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.CreateTime)

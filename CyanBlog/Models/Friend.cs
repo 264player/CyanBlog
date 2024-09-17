@@ -13,7 +13,7 @@ namespace CyanBlog.Models
         /// </summary>
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
-        [Display(Name ="友链ID")]
+        [Display(Name ="")]
         public uint FriendId {  get; set; }
 
         /// <summary>
@@ -43,6 +43,7 @@ namespace CyanBlog.Models
         /// 友联创建时间
         /// </summary>
         [Required]
+        [Display(Name = "创建时间")]
         public DateTime CreateTime {  get; set; }
 
         /// <summary>

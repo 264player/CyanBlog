@@ -13,7 +13,7 @@ namespace CyanBlog.Models
         /// </summary>
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
-        [Display(Name = "留言ID")]
+        [Display(Name = "")]
         public uint MessageId {  get; set; }
 
         /// <summary>
@@ -35,6 +35,7 @@ namespace CyanBlog.Models
         /// 用户ID
         /// </summary>
         [Required]
+        [Display(Name = "用户ID")]
         public uint UserId {  get; set; }
 
         /// <summary>

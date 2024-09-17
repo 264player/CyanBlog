@@ -30,8 +30,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\pictrues\" />
     <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\pictrues\" />
     <Folder Include="MessageQueue\" />
   </ItemGroup>
 

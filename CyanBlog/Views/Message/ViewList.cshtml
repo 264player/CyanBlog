@@ -9,6 +9,13 @@
         <a asp-action="Create" class="layui-btn layui-btn-radius">新建留言</a>
     </p>
     <table class="layui-table glass-item">
+        <colgroup>
+            <col width="30">
+            <col>
+            <col width="220">
+            <col width="90"/>
+            <col width="180">
+        </colgroup>
         <thead>
             <tr>
                 <th>
@@ -22,9 +29,6 @@
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.UserId)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ManagerId)
                 </th>
                 <th></th>
             </tr>
@@ -44,9 +48,6 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.UserId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ManagerId)
                     </td>
                     <td>
                         <a asp-controller="Message" asp-action="EditView" asp-route-id="@item.MessageId">编辑</a> |

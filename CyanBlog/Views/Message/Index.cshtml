@@ -5,7 +5,7 @@
     List<Message> messages = ViewBag.MessageList;
 }
 <div class="layui-col-md8 layui-col-md-offset2 layui-panel  glass-container" style="padding:32px;margin-bottom:32px; min-height: 100%;height: 100%;">
-    @if (messages != null)
+    @if (messages != null && messages.Count != 0)
     {
         @foreach (var item in messages)
         {
@@ -20,15 +20,14 @@
                         <h3>@item.User.NickName:</h3>
                     }
                     <p>@item.Content</p>
-                    <p class="layui-font-14">@item.CreateTime.ToString("yyyy年MM月dd日-hh:mm:ss")</p>
+                    <p class="layui-font-12">@item.CreateTime.ToString("yyyy-MM-dd hh:mm:ss")</p>
                 </div>
             </div>
         }
-
     }
     else
     {
-        <div class="layui-panel" style="margin-bottom: 32px;">
+        <div class="layui-panel glass-item" style="margin-bottom: 32px;">
             <div style="padding: 32px;">
                 <p>期待你的留言</p>
             </div>

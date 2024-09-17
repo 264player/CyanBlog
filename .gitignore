@@ -4,8 +4,8 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # staticresource
-/CyanBlog/wwwroot/images/
-
+/CyanBlog/wwwroot/images/*
+!/CyanBlog/wwwroot/images/.gitkeep
 
 # User-specific files
 *.rsuser

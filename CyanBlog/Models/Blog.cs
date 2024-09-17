@@ -12,6 +12,7 @@ namespace CyanBlog.Models
         /// 博客ID
         /// </summary>
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name ="")]
         public uint BlogID { get; set; }
 
         /// <summary>
@@ -89,6 +90,7 @@ namespace CyanBlog.Models
         /// 博客分类ID
         /// </summary>
         [Required]
+        [Display(Name ="分类编号")]
         public uint ClassId {  get; set; }
 
         /// <summary>
