@@ -1,50 +1,45 @@
 ﻿using CyanBlog.DbAccess.Context;
+using CyanBlog.MessageQueue;
 using CyanBlog.Models;
 using Microsoft.EntityFrameworkCore;
+using MQ;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
+using ExchangeType = RabbitMQ.Client.ExchangeType;
 
 namespace CyanBlog.BackGroudService
 {
     public class RabbitMqConsumerService : BackgroundService
     {
-        private readonly IModel _channel;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
-
-        public RabbitMqConsumerService(IModel channel, IServiceScopeFactory serviceScopeFactory)
+        private MessageConsumer _consuumer;
+        private IServiceScopeFactory _serviceScopeFactory;
+        public RabbitMqConsumerService(MessageConsumer consumer, IServiceScopeFactory serviceScopeFactory)
         {
-            _channel = channel;
+            _consuumer = consumer;
+            _consuumer.ExchangeConfiguration = new ExchangeConfiguration()
+            {
+                ExchangeName = "blog",
+                ExchangeType = ExchangeType.Direct,
+                RoutingKey = "ViewCountIncreament"
+            };
+            _consuumer.QueueConfiguration = new QueueConfiguration("blog-ViewCountIncreament");
+            _consuumer.initial();
             _serviceScopeFactory = serviceScopeFactory;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += (model, ea) =>
+            _consuumer.Start(async message =>
             {
-                var body = ea.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
-                uint blogID = uint.Parse(message);
+                var handler = JsonConvert.DeserializeObject<BlogViewCountIncreament>(message);
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
-                    var _dbContext = scope.ServiceProvider.GetRequiredService<CyanBlogDbContext>();
-                    // 执行数据库的 count++ 操作
-                    Blog? blog = _dbContext.Blog.Find(blogID);
-                    if (blog != null)
-                    {
-                        blog.ViewCount++;
-                        _dbContext.SaveChanges();
-                    }
-                    // 手动确认消息已被处理
-                    _channel.BasicAck(ea.DeliveryTag, false);
+                    handler._dbContext = scope.ServiceProvider.GetRequiredService<CyanBlogDbContext>();
+                    await handler.ExecuteAsync();
                 }
-            };
-
-            _channel.BasicConsume(queue: "viewcount_queue",
-                                 autoAck: false, // 手动确认
-                                 consumer: consumer);
-
+            });
             return Task.CompletedTask;
         }
     }

@@ -18,7 +18,19 @@ namespace MQ
         /// <summary>
         /// 交换机配置
         /// </summary>
-        private readonly ExchangeConfiguration _exchangeConfiguration;
+        private ExchangeConfiguration? _exchangeConfiguration;
+
+        public ExchangeConfiguration? ExchangeConfiguration { 
+            get
+            { 
+                return _exchangeConfiguration;
+            }
+            set
+            {
+                _exchangeConfiguration = value;
+                initial();
+            }
+        }
 
         /// <summary>
         /// 发送消息的通道
@@ -38,18 +50,19 @@ namespace MQ
             }
         }
 
-        public MessagePublisher(ConnectionManager connectionManager, ExchangeConfiguration exchangeConfiguration) : base(connectionManager)
+        public MessagePublisher(ConnectionManager connectionManager) : base(connectionManager)
         {
-            _exchangeConfiguration = exchangeConfiguration;
-            initial();
         }
 
         /// <summary>
         /// 初始化发布者
         /// </summary>
-        private void initial()
+        public void initial()
         {
-            _channel.ExchangeDeclare(_exchangeConfiguration.ExchangeName, _exchangeConfiguration.ExchangeType);
+            if (_exchangeConfiguration != null)
+            {
+                Channel.ExchangeDeclare(_exchangeConfiguration.ExchangeName, _exchangeConfiguration.ExchangeType,true);
+            }
         }
 
         /// <summary>
@@ -58,10 +71,13 @@ namespace MQ
         /// <param name="message">待发送的消息</param>
         public void Publish(string message)
         {
-            _channel.BasicPublish(exchange: _exchangeConfiguration.ExchangeName,
+            if(_exchangeConfiguration != null)
+            {
+                Channel.BasicPublish(exchange: _exchangeConfiguration.ExchangeName,
                                  routingKey: _exchangeConfiguration.RoutingKey,
                                  basicProperties: null,
                                  body: Encoding.UTF8.GetBytes(message));
+            }
         }
     }
 }

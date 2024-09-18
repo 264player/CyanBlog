@@ -4,13 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CyanBlog", "CyanBlog\CyanBlog.csproj", "{6187FAE5-971B-4583-B7C3-2A877BFE43BC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C405058E-BA00-4250-AF73-B793AB69DAD7} = {C405058E-BA00-4250-AF73-B793AB69DAD7}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CyanBlogTest", "CyanBlogTest\CyanBlogTest.csproj", "{0A06F93B-7690-4778-965B-C483411BBF1D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{6187FAE5-971B-4583-B7C3-2A877BFE43BC} = {6187FAE5-971B-4583-B7C3-2A877BFE43BC}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQ", "MQ\MQ.csproj", "{C405058E-BA00-4250-AF73-B793AB69DAD7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQ", "MQ\MQ.csproj", "{C405058E-BA00-4250-AF73-B793AB69DAD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

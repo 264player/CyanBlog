@@ -6,6 +6,7 @@ using CyanBlog.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MQ;
 using NLog.Extensions.Logging;
 using RabbitMQ.Client;
 
@@ -31,6 +32,14 @@ namespace CyanBlog
             });
 
             builder.Services.AddSingleton<VisitFilter>();
+
+            //消息队列服务
+            builder.Services.AddSingleton(sp =>
+            {
+                return new ConnectionManager(builder.Configuration.GetConnectionString("RqbbitMqHost"));
+            });
+            builder.Services.AddSingleton<MessagePublisher>();
+            builder.Services.AddSingleton<MessageConsumer>();
 
             // 配置cyanBlog数据库上下文
             builder.Services.AddDbContext<CyanBlogDbContext>(options =>

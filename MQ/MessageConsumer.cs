@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
@@ -17,12 +18,33 @@ namespace MQ
         /// <summary>
         /// 交换机配置信息
         /// </summary>
-        private readonly ExchangeConfiguration _exchangeConfiguration;
+        private ExchangeConfiguration? _exchangeConfiguration;
+
+        public ExchangeConfiguration? ExchangeConfiguration
+        {
+            get { return _exchangeConfiguration; }
+            set
+            { 
+                _exchangeConfiguration = value;
+            }
+        }
 
         /// <summary>
         /// 队列配置信息
         /// </summary>
-        private readonly QueueConfiguration _queueConfiguration;
+        private QueueConfiguration? _queueConfiguration;
+
+        public QueueConfiguration? QueueConfiguration
+        {
+            get
+            {
+                return _queueConfiguration;
+            }
+            set
+            {
+                _queueConfiguration = value;
+            }
+        }
 
         /// <summary>
         /// 发送消息的通道
@@ -41,17 +63,14 @@ namespace MQ
                 return _channel;
             }
         }
-        public MessageConsumer(ConnectionManager connectionManager,
-            QueueConfiguration queueConfiguration,
-            ExchangeConfiguration exchangeConfiguration):base(connectionManager)
+        public MessageConsumer(ConnectionManager connectionManager):base(connectionManager)
         {
-            _exchangeConfiguration = exchangeConfiguration;
-            _queueConfiguration = queueConfiguration;
         }
 
 
-        private void initial()
+        public void initial()
         {
+            Channel.ExchangeDeclare(_exchangeConfiguration.ExchangeName, _exchangeConfiguration.ExchangeType, true);
             Channel.QueueDeclare(queue: _queueConfiguration.QueueName,
                 durable: false,
                 exclusive: false,
@@ -64,13 +83,13 @@ namespace MQ
 
         public void Start(Action<string> onMessageReceived)
         {
+            
             var consumer = new EventingBasicConsumer(Channel);
             consumer.Received += (model, ea) =>
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
-                var routingKey = ea.RoutingKey;
-                Console.WriteLine($" [x] Received '{routingKey}':'{message}'");
+                onMessageReceived(message);
             };
             Channel.BasicConsume(queue: _queueConfiguration.QueueName,
                                  autoAck: true,

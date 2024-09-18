@@ -32,13 +32,16 @@
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\pictrues\" />
-    <Folder Include="MessageQueue\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MQ\MQ.csproj" />
   </ItemGroup>
 
   <ItemGroup>

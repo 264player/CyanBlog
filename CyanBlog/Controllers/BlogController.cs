@@ -1,10 +1,14 @@
 ﻿using CyanBlog.DbAccess.Context;
+using CyanBlog.MessageQueue;
 using CyanBlog.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using MQ;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 using System.Text;
 using System.Threading.Channels;
 using Channel = RabbitMQ.Client.IModel;
@@ -29,20 +33,27 @@ namespace CyanBlog.Controllers
         /// <summary>
         /// 消息队列连接
         /// </summary>
-        private Channel _channel;
+        private MessagePublisher _publisher;
 
         /// <summary>
         /// 带有日志输出器和数据库上下文的构造方法
         /// </summary>
         /// <param name="logger">日志输出器</param>
         /// <param name="dbContext">CyanBlog数据库上下文</param>
-        /// <param name="channel">消息队列连接</param>
+        /// <param name="publisher">消息队列连接</param>
         [ActivatorUtilitiesConstructor]
-        public BlogController(ILogger<BlogController> logger, CyanBlogDbContext dbContext, Channel channel)
+        public BlogController(ILogger<BlogController> logger, CyanBlogDbContext dbContext, MessagePublisher publisher)
         {
             _logger = logger;
             _context = dbContext;
-            _channel = channel;
+            _publisher = publisher;
+            _publisher.ExchangeConfiguration = new ExchangeConfiguration()
+            {
+                ExchangeName = "blog",
+                ExchangeType = ExchangeType.Direct,
+                RoutingKey = "ViewCountIncreament"
+            };
+            _publisher.initial();
         }
 
         /// <summary>
@@ -95,13 +106,9 @@ namespace CyanBlog.Controllers
         /// </summary>
         private void blogViewCountIncreament(uint? blogID)
         {
-            var message = blogID.ToString();
-            var body = Encoding.UTF8.GetBytes(message);
-            _channel.BasicPublish(exchange: "",
-                                 routingKey: "viewcount_queue",
-                                 mandatory: false,
-                                 basicProperties: null,
-                                 body: body);
+            BlogViewCountIncreament viewIncreament = new BlogViewCountIncreament((uint)blogID);
+            var message = JsonConvert.SerializeObject(viewIncreament);
+            _publisher.Publish(message);
         }
 
         /// <summary>
