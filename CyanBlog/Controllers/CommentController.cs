@@ -122,7 +122,7 @@ namespace CyanBlog.Controllers
         /// 管理员管理评论界面
         /// </summary>
         /// <returns>评论管理界面</returns>
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         public async Task<ActionResult> ViewList()
         {
             return View(await _GetCommentListAsync(true));

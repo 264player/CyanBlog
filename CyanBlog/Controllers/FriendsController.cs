@@ -92,7 +92,7 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="id">编辑友链id</param>
         /// <returns></returns>
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         public async Task<IActionResult> EditView(uint? id)
         {
             if (id == null)
@@ -117,7 +117,7 @@ namespace CyanBlog.Controllers
         /// <param name="friend"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(uint id, [Bind("FriendId,Title,Url,PictureUrl,CreateTime")] Friend friend)
         {
@@ -154,7 +154,7 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         public async Task<IActionResult> DeleteView(uint? id)
         {
             if (id == null)
@@ -179,7 +179,7 @@ namespace CyanBlog.Controllers
         /// <returns></returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         public async Task<IActionResult> DeleteConfirmed(uint id)
         {
             if (_context.Friend == null)
@@ -211,7 +211,7 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         public async Task<ActionResult> ViewList()
         {
             List<Friend> friends = await _GetFriendListAsync(true);

@@ -53,7 +53,7 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <returns>管理留言列表界面</returns>
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         public async Task<ActionResult> ViewList()
         {
             List<Message> messages = await _GetAllMessageListAsync(true);
@@ -112,7 +112,7 @@ namespace CyanBlog.Controllers
         /// <param name="id">留言id</param>
         /// <returns>返回留言编辑界面</returns>
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         public async Task<ActionResult> EditView(uint id)
         {
             Message? message = await _GetMessageByIDAsync(id);
@@ -128,7 +128,7 @@ namespace CyanBlog.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         public async Task<ActionResult> Edit(Message message)
         {
             User? exitUser = _context.User.Find(message.UserId);
@@ -144,7 +144,7 @@ namespace CyanBlog.Controllers
         /// <param name="id">留言id</param>
         /// <returns>删除留言界面的id</returns>
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         public async Task<ActionResult> DeleteView(uint id)
         {
             Message? message = await _GetMessageByIDAsync(id);
@@ -160,7 +160,7 @@ namespace CyanBlog.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         public async Task<ActionResult> Delete(uint id)
         {
             Message? message = await _GetMessageByIDAsync(id);

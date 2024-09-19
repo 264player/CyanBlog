@@ -115,7 +115,7 @@ namespace CyanBlog.Controllers
         /// 新建博客页面
         /// </summary>
         /// <returns>返回新建博客页面</returns>
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         [HttpGet]
         public async Task<ActionResult> CreateBlog()
         {
@@ -128,7 +128,7 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="blog">需要提交的博客</param>
         /// <returns>返回到首页</returns>
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Blog blog)
@@ -147,7 +147,7 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="id">待编辑的博客id</param>
         /// <returns>编辑博客页面</returns>
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         [HttpGet]
         public async Task<ActionResult> EditBlog(uint id)
         {
@@ -164,7 +164,7 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="blog">修改之后的博客</param>
         /// <returns>重定向到博客管理首页</returns>
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Blog blog)
@@ -184,7 +184,7 @@ namespace CyanBlog.Controllers
         /// <param name="id">待删除的id</param>
         /// <returns>删除博客界面</returns>
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         public async Task<ActionResult> DeleteBlog(uint? id)
         {
             if (id == null)
@@ -204,7 +204,7 @@ namespace CyanBlog.Controllers
         /// </summary>
         /// <param name="id">需要删除的博客的id</param>
         /// <returns>重定向到博客管理首页</returns>
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Remove(uint id)
@@ -222,7 +222,7 @@ namespace CyanBlog.Controllers
         /// 博客管理的首页
         /// </summary>
         /// <returns>博客管理首页页面</returns>
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         public async Task<ActionResult> ViewList()
         {
             return View(await _GetBlogListAsync(true));

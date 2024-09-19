@@ -159,7 +159,15 @@ namespace CyanBlog
             
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = ctx =>
+                {
+                    // …Ë÷√ª∫¥ÊÕ∑
+                    ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=86400");
+                    ctx.Context.Response.Headers.Append("Expires", DateTime.UtcNow.AddDays(1).ToString("R"));
+                }
+            });
 
             app.UseRouting();
 

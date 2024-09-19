@@ -20,6 +20,7 @@ namespace CyanBlog.MessageQueue
         /// 使用博客id初始化此类
         /// </summary>
         /// <param name="blogID">需要递增浏览量的博客id</param>
+        /// <param name="cyanBlogDbContext">cyanblog数据库上下文</param>
         public BlogViewCountIncreament(uint blogID,CyanBlogDbContext cyanBlogDbContext)
         {
             _blogID = blogID;

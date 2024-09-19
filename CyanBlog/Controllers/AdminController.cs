@@ -77,6 +77,7 @@ namespace CyanBlog.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+
             return View(new UserLoginDto());
         }
 

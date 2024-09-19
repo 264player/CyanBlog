@@ -26,7 +26,7 @@ namespace CyanBlog.Controllers
         /// 展示上传的图片以及路径
         /// </summary>
         /// <returns>展示图片页面</returns>
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         public ActionResult Index()
         {
             string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
@@ -45,7 +45,7 @@ namespace CyanBlog.Controllers
         /// 上传图片的界面
         /// </summary>
         /// <returns>上传图片页面</returns>
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         [HttpGet]
         public ActionResult UploadImage()
         {
@@ -60,7 +60,7 @@ namespace CyanBlog.Controllers
         /// <param name="images">表单中上传的图片文件</param>
         /// <returns>上传成功则继续返回上传界面，并返回成功信息。如果失败就返回失败的信息。</returns>
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "ROOT")]
         public async Task<ActionResult> UploadImage(List<IFormFile> images)
         {
 
