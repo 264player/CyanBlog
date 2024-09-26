@@ -102,21 +102,6 @@ namespace CyanBlog
              });
 
             #region rabbitmq
-
-            var factory = new ConnectionFactory() { HostName = "localhost" }; // 配置 RabbitMQ 地址
-            var connection = factory.CreateConnection();
-            var channel = connection.CreateModel();
-
-            // 声明队列
-            channel.QueueDeclare(queue: "viewcount_queue",
-                                 durable: false,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
-
-            // 将 RabbitMQ 信道注入服务
-            builder.Services.AddSingleton(channel);
-
             builder.Services.AddHostedService<RabbitMqConsumerService>();
 
             #endregion
@@ -141,7 +126,6 @@ namespace CyanBlog
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -161,6 +145,8 @@ namespace CyanBlog
             app.UseHttpsRedirection();
             app.UseStaticFiles(new StaticFileOptions
             {
+                ServeUnknownFileTypes = true,
+                DefaultContentType = "text/plain",
                 OnPrepareResponse = ctx =>
                 {
                     // 设置缓存头

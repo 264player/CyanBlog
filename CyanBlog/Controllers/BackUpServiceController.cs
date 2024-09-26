@@ -26,7 +26,7 @@ namespace CyanBlog.Controllers
         private string BackUp()
         {
             string connectionString = _configuration.GetConnectionString("MySQLConnection");
-            string backupFile = @"G:\studyfile\else\database_backup.sql"; // 保存备份文件路径
+            string backupFile = $"{Directory.GetCurrentDirectory()}database_backup.sql"; // 保存备份文件路径
 
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
